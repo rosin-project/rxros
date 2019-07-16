@@ -17,7 +17,7 @@ install the following software on your computer:
 
 You can download an image of the Ubuntu Bionic Linux distribution at<br>
 https://www.ubuntu.com/#download<br>
-You may in addition find the following packages usefull
+You may in addition find the following packages useful
 
 ```bash
 sudo apt-get install git doxygen graphviz-* meld cmake
@@ -93,9 +93,12 @@ gives simple access to ROS.<br>
 
 ## Initial setup
 
-A RxROS program is in principle a ROS node,
-so the first step is not surprisingly to initialise it and specify the node name.
-This is done by means of the init function<br>
+The most fundamental RxROS program is the initialization of a ROS node. 
+This is done simply by calling the rxros::init function. The rxros::init function takes three arguments:
+The number of command line arguments the node or program was called with (argc), the actual arguments (argv)
+and the name of the node. argc and argv are inherited directly from the main function and all three arguments
+are used to initialize a ROS node. Failure to initialize a node with rxros::init will cause all interaction 
+with ROS to fail.
 
 ### Syntax
 
@@ -109,14 +112,45 @@ rxros::init(argc, argv, "Name_of_ROS_node");
 #include <rxros.h>
 int main(int argc, char** argv) {'
     rxros::init(argc, argv, "velocity_publisher"); // Name of this node.
+    // ...
+}
+```
 
-    // ... here 
+## Spinning
 
-    rxros::spin();
+The other fundamental function of RxROS is rxros::spin. The function blocks the main thread until it is shutdown or terminated.
+This means that the rxros::spin function always should be placed at the very bottom of the main function.
+The other purpose of the rxros::spin function is to dispatch messages from ROS topics to the appropriate RxROS observables.
+Failure to omit the rxros::spin function will cause the program to terminate immediately and observables based on ROS topics
+will not emit any events. 
+
+The Example below shows a minimal RxROS program that creates a ROS node named “my_node”.
+The program will due to rxros:spin() continue to run until it is either shutdown or terminated.
+
+### Syntax
+
+```cpp
+void rxros::spin();
+```
+
+### Example
+
+```cpp
+#include <rxros.h>
+int main(int argc, char** argv) {
+    rxros::init(argc, argv, "my_node"); // Name of this node.
+    // ...  
+    rxros::spin(); // block the main thread until it is terminated.
 }
 ```
 
 ## Parameters
+ROS provides through the parameters interface a simple way to customize a node without having to recompile
+the source each time there is a change to its configuration. The RxROS parameter interface provides easy
+access to the ROS parameter server through an overloaded set of get functions. Each function takes as argument
+the name of the parameter to be looked up and a default value that is returned if the specified parameter
+was not found. The returned result is of the same type as the default value. Failure to specify the correct
+parameter type will either cause a wrong conversion or the program may simply crash.<br>
 
 ### Syntax
 
@@ -144,6 +178,12 @@ int main(int argc, char** argv) {
 ```
 
 ## Logging
+Logging is fundamentally a debugging facility that allows the programmer to print out information
+about the robot’s internal state. RxROS provides five logging levels where each level indicates the
+severity of the problem. Each loglevel returns as show reference to a logging object which actually
+is an std::ostringstream. This means that the well-known C++ stream insertion operator “<<” can be
+used to compose the logging messages. RxROS logging will be fully backwards compatible with ROS.
+This means that all the functionality provided by the ROS logging framework is also available to RxROS.
 
 ### Syntax
 
@@ -167,11 +207,31 @@ int main(int argc, char** argv) {
     rxros::logging().warn() << "max_vel_linear: " << maxVelLinear << " m/s";
     rxros::logging().error() << "min_vel_angular: " << minVelAngular << " rad/s";
     rxros::logging().fatal() << "max_vel_angular: " << maxVelAngular << " rad/s";
+    //...
+    rxros::spin();
+}
 ```
 
 ## Observables
+Observables are asynchronous message streams. They are the fundamental data structure of RxROS.
+As soon as we have the observables RxCpp will provide us with a number of functions and operators
+to manipulate the streams.
 
-### Topics
+### Observable from a topic
+An observable data stream is created from a topic simply by calling the rxros::observable::from_topic function.
+The function takes two arguments a name of the topic and an optional queue size.
+In order to use the rxros::observable::from_topic function it is important also to specify the type of the topic messages.
+
+The example below demonstrates how two ROS topics named “/joystick” and “/keyboard” are turned into two observable streams
+by means of the rxros::observable::from_topic function and then merged together into a new observable message stream named
+teleop_obsrv. Observe the use of the map operator: Since teleop_msgs::Joystick and teleop_msgs::Keyboard are different
+message types it is not possible to merge them directly. The map operator solves this problem by converting each
+teleop_msgs::Joystick and teleop_msgs::Keyboard message into a simple integer that represents the low level event of
+moving the joystick or pressing the keyboard.
+
+The pipe operator “|” is a specialty of RxCpp that is used as a simple mechanism to compose operations on 
+observable message streams. The usual “.” notation could have been used just as vel, but it’s common to use
+the pipe operator “|” in RxCpp.<br>
 
 #### Syntax
 
@@ -195,7 +255,13 @@ int main(int argc, char** argv) {
 }
 ```
 
-### Broadcasters
+### Observable from a transform listener
+A transform listener listens as the name indicates for broadcasted transformations, or more specific it listens for
+broadcasted transformations from a specified parent frame id to a specified child frame id. 
+The rxros::observable::from_transform turns these transformations into an observable message stream of
+type tf::StampedTransform. The rxros::observable::from_transform takes three arguments: the parent frameId and child frameId
+and then an optional frequency. The frequency specifies how often the rxros::observable::from_transform will perform
+a lookup of the broadcasted transformations.<br>
 
 #### Syntax
 
@@ -208,27 +274,141 @@ auto rxros::observable::from_transform(const std::string& parent_frameId, const 
 ```cpp
 ```
 
+### Observable from a Linux device
 
-### Services
+The function rxros::observable::from_device will turn a Linux block or character device like “/dev/input/js0” into an
+observable message stream. rxros::observable::from_device has as such nothing to do with ROS, but it provides an
+interface to low-level data types that are needed in order to create e.g. keyboard and joystick observables.
+The rxros::observable::from_device takes as argument the name of the device and a type of the data that are read
+from the device. 
+
+The example below shows what it takes to turn a stream of low-level joystick events into an observable message stream
+and publish them on a ROS topic. First an observable message stream is created from the device “/dev/input/js0”.
+Then is is converted it to a stream of ROS messages and finally the messages are published to a ROS topic.
+Three simple steps, that’s it! <br>
 
 #### Syntax
 
 ```cpp
+auto rxros::observable::from_device<device_type>(const std::string& device_name)
 ```
 
 #### Example
 
 ```cpp
+int main(int argc, char** argv) {
+    rxros::init(argc, argv, "joystick_publisher"); // Name of this node.
+    //...
+    rxros::observable::from_device<joystick_event>("/dev/input/js0")
+        | map(joystickEvent2JoystickMsg)
+        | publish_to_topic<teleop_msgs::Joystick>("/joystick");
+    //...
+    rxros::spin();
+}
 ```
 
-
 ## Operators
+
+One of the primary advantages of stream oriented processing is the fact that we can apply functional programming
+primitives on them. RxCpp operators are nothing but filters, transformations, aggregations and reductions of the
+observable message streams we created in the previous section.
+
+### Publish to Topic
+
+rxros::operators::publish_to_topic is a rather special operator. It does not modify the message steam - 
+it is in other words an identity function/operator. It will however take each message from the
+stream and publish it to a specific topic. This means that it is perfectly possible to continue
+modifying the message stream after it has been published to a topic. This will allow us to e.g. 
+send transform broadcasts or even publish the messages to other topics.
+
+#### Syntax:
+
+```cpp
+auto rxros::operators::publish_to_topic<topic_type>(const std::string &topic, const uint32_t queue_size = 10) 
+```
+
+#### Example: Publish messages from a joystick device to a specific topic.
+```cpp
+int main(int argc, char** argv) {
+    rxros::init(argc, argv, "joystick_publisher"); // Name of this node.
+    //...
+    rxros::observable::from_device<joystick_event>("/dev/input/js0
+")
+        | map(joystickEvent2JoystickMsg)
+        | publish_to_topic<teleop_msgs::Joystick>("/joystick");
+    //...
+    rxros::spin();
+}
+```
+
+### Send Transform
+
+The rxros::operators::send_transform operator works exactly the same ways as the rxros::operators::publish_to_topic operator.
+It does not modify the message steam it is operating on, but it will take each message and broadcast it to any listeners.
+The rxros::operators::send_transform comes in two variants: One that takes no arguments and operates on message streams of
+type tf::StampedTranformation and one that takes the parent frame id and child frame id as argument and operates on message
+streams of type tf::Transform. The later will convert the tf::Transform messages into tf::StampedTranformation messages so
+that both operators broadcast the same message type. 
+
+#### Syntax:
+
+```cpp
+auto rxros::operators::send_transform();
+auto rxros::operators::send_transform(const std::string& parent_frameId, const std::string& child_frameId);
+```
+
+### Call Service
+
+Besides the publish/subscribe model, ROS also provides a request/reply model that allows a remote procedure call (RPC)
+to be send from one node (request) and handled by another node (reply) - it is a typical client-server mechanism that
+can be useful in distributed systems.
+
+RxROS only provides a means to send a request, i.e. the client side. The server side will have to be created exactly
+the same way as it is done it ROS. To send a request the  rxros::operators::call_service operator is called. It take
+a service name as argument and service type that specifies the type of the observable message stream the operation
+was applied on. The service type consists of a request and response part. The request part must be filled out prior
+to the service call and the result will be a new observable stream where the response part has been filled out by the 
+server part.
+
+#### Syntax:
+```cpp
+auto rxros::operators::call_service<service_type>(const std::string& service_name)
+```
+
+### Sample with Frequency
+The operator rxros::operators::sample_with_frequency will at regular intervals emit the last element or message of the
+observable message stream it was applied on - that is independent of whether it has changed or not. This means that 
+the observable message stream produced by rxros::operators::sample_with_frequency may contain duplicated messages if
+the frequency is too high and it may miss messages in case the frequency is too low. This is the preferred way in ROS
+to publish messages on a topic and therefore a needed operation. 
+
+The operation operator rxros::operators::sample_with_frequency comes in two variants. 
+One that is executing in the current thread and one that is executing in a specified thread also known as a 
+coordination in RxCpp.
+
+#### Syntax:
+```cpp
+auto rxros::operators::sample_with_frequency(const double frequency)
+auto rxros::operation::sample_with_frequency(const double frequency, Coordination coordination)
+```
+
+#### Example:
+```cpp
+int main(int argc, char** argv) {
+    rxros::init(argc, argv, "joystick_publisher"); // Name of this node.
+    //...
+    | sample_with_frequency(frequencyInHz)
+    | publish_to_topic<geometry_msgs::Twist>("/cmd_vel");
+    //...
+    rxros::spin();
+}
+```
 
 
 ## Example
 The following example is a full implementation of a velocity publisher
 that takes input from a keyboard and joystick and publishes Twist messages
-on the /cmd_vel topic:
+on the /cmd_vel topic:<br>
 
 ```cpp
 #include <rxros.h>
