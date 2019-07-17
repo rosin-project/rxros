@@ -1,23 +1,24 @@
 # RxROS
 
+## Introduction 
+
 RxROS is new API for ROS based on the paradigm of reactive programming.
 Reactive programming is an alternative to callback-based programming for implementing
 concurrent message passing systems that emphasizes explicit data flow over control flow.
 It makes the message flow and transformations of messages easy to capture in one place. 
 It eliminates problems with deadlocks and understanding how callbacks interact.
 It helps you to make your nodes functional, concise, and testable. 
-RxROS aspires to the slogan ‘concurrency made easy.’ 
+RxROS aspires to the slogan ‘concurrency made easy’. 
 
 ## Setup and installation
 
-In order to make use of this software you must
-install the following software on your computer:
+In order to make use of this software you must install the following software on your computer:
 
 ### Ubuntu Bionic (18.04)
 
 You can download an image of the Ubuntu Bionic Linux distribution at<br>
 https://www.ubuntu.com/#download<br>
-You may in addition find the following packages useful
+You may in addition find the following packages useful.
 
 ```bash
 sudo apt-get install git doxygen graphviz-* meld cmake
@@ -31,7 +32,7 @@ sudo apt-get install libcanberra-gtk-module
 
 Installation instruction of how to install ROS Melodic Morenia can be found at<br>
 http://wiki.ros.org/melodic/Installation/Ubuntu<br>
-Execute the following commands to install ROS Melodic Morenia:
+or execute the following commands to install ROS Melodic Morenia:
 
 ```bash
 sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
@@ -145,12 +146,13 @@ int main(int argc, char** argv) {
 ```
 
 ## Parameters
+
 ROS provides through the parameters interface a simple way to customize a node without having to recompile
 the source each time there is a change to its configuration. The RxROS parameter interface provides easy
 access to the ROS parameter server through an overloaded set of get functions. Each function takes as argument
 the name of the parameter to be looked up and a default value that is returned if the specified parameter
 was not found. The returned result is of the same type as the default value. Failure to specify the correct
-parameter type will either cause a wrong conversion or the program may simply crash.<br>
+parameter type will either cause a wrong conversion or the program may simply crash.
 
 ### Syntax
 
@@ -178,9 +180,10 @@ int main(int argc, char** argv) {
 ```
 
 ## Logging
+
 Logging is fundamentally a debugging facility that allows the programmer to print out information
 about the robot’s internal state. RxROS provides five logging levels where each level indicates the
-severity of the problem. Each loglevel returns as show reference to a logging object which actually
+severity of the problem. Each loglevel returns as show a reference to a logging object which actually
 is an std::ostringstream. This means that the well-known C++ stream insertion operator “<<” can be
 used to compose the logging messages. RxROS logging will be fully backwards compatible with ROS.
 This means that all the functionality provided by the ROS logging framework is also available to RxROS.
@@ -213,11 +216,13 @@ int main(int argc, char** argv) {
 ```
 
 ## Observables
-Observables are asynchronous message streams. They are the fundamental data structure of RxROS.
+
+Observables are asynchronous message streams. They are the fundamental data structure used by RxROS.
 As soon as we have the observables RxCpp will provide us with a number of functions and operators
 to manipulate the streams.
 
-### Observable from a topic
+### Observable from a Topic
+
 An observable data stream is created from a topic simply by calling the rxros::observable::from_topic function.
 The function takes two arguments a name of the topic and an optional queue size.
 In order to use the rxros::observable::from_topic function it is important also to specify the type of the topic messages.
@@ -231,7 +236,7 @@ moving the joystick or pressing the keyboard.
 
 The pipe operator “|” is a specialty of RxCpp that is used as a simple mechanism to compose operations on 
 observable message streams. The usual “.” notation could have been used just as vel, but it’s common to use
-the pipe operator “|” in RxCpp.<br>
+the pipe operator “|” in RxCpp.
 
 #### Syntax
 
@@ -256,22 +261,18 @@ int main(int argc, char** argv) {
 ```
 
 ### Observable from a transform listener
-A transform listener listens as the name indicates for broadcasted transformations, or more specific it listens for
+
+A transform listener listens as the name indicates to broadcasted transformations, or more specific it listens to
 broadcasted transformations from a specified parent frame id to a specified child frame id. 
 The rxros::observable::from_transform turns these transformations into an observable message stream of
 type tf::StampedTransform. The rxros::observable::from_transform takes three arguments: the parent frameId and child frameId
 and then an optional frequency. The frequency specifies how often the rxros::observable::from_transform will perform
-a lookup of the broadcasted transformations.<br>
+a lookup of the broadcasted transformations.
 
 #### Syntax
 
 ```cpp
 auto rxros::observable::from_transform(const std::string& parent_frameId, const std::string& child_frameId, const double frequency = 10.0)
-```
-
-#### Example
-
-```cpp
 ```
 
 ### Observable from a Linux device
@@ -307,6 +308,70 @@ int main(int argc, char** argv) {
 }
 ```
 
+### Observable from a Yaml file
+
+This section describes how to turn a Yaml configuration file into an observable message stream.
+ROS uses the Yaml format to configure various packages. An example of a Yaml file is given below: 
+It’s a configuration of the sensors and actuators that are used on a BrickPi3 robot. 
+
+```
+brickpi3_robot:
+  - type: motor
+    name: r_wheel_joint
+    port: PORT_D
+    frequency: 20.0
+
+  - type: color
+    frame_id: color_link
+    name: color_sensor
+    port: PORT_4
+    frequency: 2.0
+
+  - type: touch
+    frame_id: touch_link
+    name: touch_sensor
+    port: PORT_1
+    frequency: 2.0
+```
+
+The Yaml file defines a configuration of the BrickPi3 motor, color and touch sensor.
+The rxros::observable::from_yaml function will turn the Yaml configuration file into
+an observable data stream with three elements: One element for each device. 
+
+The example below demonstrates how to use the rxros::observable::from_yaml function.
+As soon as we subscribe to the observable it will start to emit events (on_next events)
+in form of configurations for each device. The device can then be used to lookup
+information about its type, name, port and frequency. This is all important information
+that are needed to create an instance of the device and to start monitoring device.
+
+The device is of type DeviceConfig. It is nothing but a support or helper class that
+gives easy access to the values of the device’s elements. The call device.getFrequency()
+is a wrapper for the call ‘(double) value[“frequency”]’ where value is a special data
+structure that represents the Yaml format of a device and ‘(double)’ is a conversion
+operator that turns the looked up frequency into a double. The structure will be described
+in more details in the chapter “RxROS Implementation”.
+ 
+#### Syntax
+
+```cpp
+auto rxros::observable::from_yaml(const std::string& namespace)
+```
+
+#### Example
+
+```cpp
+int main(int argc, char** argv) {
+    rxros::init(argc, argv, "brickpi3"); // Name of this node.
+    //...
+    rxros::observable::from_yaml("/brickpi3/brickpi3_robot").subscribe(
+        [=](const auto& device) { // on_next event
+            if (device.getType() == "motor") {
+                rxros::logging().debug() << device.getType() << ", " << device.getName() << ", " << device.getPort() << ", " << device.getFrequency();
+    //..
+    rxros::spin();
+}
+```
+
 ## Operators
 
 One of the primary advantages of stream oriented processing is the fact that we can apply functional programming
@@ -327,13 +392,13 @@ send transform broadcasts or even publish the messages to other topics.
 auto rxros::operators::publish_to_topic<topic_type>(const std::string &topic, const uint32_t queue_size = 10) 
 ```
 
-#### Example: Publish messages from a joystick device to a specific topic.
+#### Example:
+
 ```cpp
 int main(int argc, char** argv) {
     rxros::init(argc, argv, "joystick_publisher"); // Name of this node.
     //...
-    rxros::observable::from_device<joystick_event>("/dev/input/js0
-")
+    rxros::observable::from_device<joystick_event>("/dev/input/js0")
         | map(joystickEvent2JoystickMsg)
         | publish_to_topic<teleop_msgs::Joystick>("/joystick");
     //...
@@ -371,11 +436,13 @@ to the service call and the result will be a new observable stream where the res
 server part.
 
 #### Syntax:
+
 ```cpp
 auto rxros::operators::call_service<service_type>(const std::string& service_name)
 ```
 
 ### Sample with Frequency
+
 The operator rxros::operators::sample_with_frequency will at regular intervals emit the last element or message of the
 observable message stream it was applied on - that is independent of whether it has changed or not. This means that 
 the observable message stream produced by rxros::operators::sample_with_frequency may contain duplicated messages if
@@ -387,12 +454,14 @@ One that is executing in the current thread and one that is executing in a speci
 coordination in RxCpp.
 
 #### Syntax:
+
 ```cpp
 auto rxros::operators::sample_with_frequency(const double frequency)
 auto rxros::operation::sample_with_frequency(const double frequency, Coordination coordination)
 ```
 
 #### Example:
+
 ```cpp
 int main(int argc, char** argv) {
     rxros::init(argc, argv, "joystick_publisher"); // Name of this node.
@@ -404,8 +473,58 @@ int main(int argc, char** argv) {
 }
 ```
 
+## Example 1: A Keyboard Publisher
 
-## Example
+The following example is a full implementation of a keyboard publisher
+that takes input from a Linux block device and publishes the low-level
+keyboard events to a ROS topic '/keyboard'
+
+```cpp
+#include <rxros.h>
+#include <teleop_msgs/Keyboard.h>
+#include "KeyboardPublisher.h"
+using namespace rxcpp::operators;
+using namespace rxros::operators;
+
+int main(int argc, char** argv)
+{
+    rxros::init(argc, argv, "keyboard_publisher"); // Name of this Node.
+
+    const auto keyboardDevice = rxros::parameter::get("/keyboard_publisher/device", "/dev/input/event1");
+    rxros::logging().info() << "Keyboard device: " << keyboardDevice;
+
+    auto keyboardEvent2KeyboardMsg = [](const auto keyboardEvent) {
+        auto makeKeyboardMsg = [=] (auto event) {
+            teleop_msgs::Keyboard keyboardMsg;
+            keyboardMsg.time = ros::Time(keyboardEvent.time.tv_sec, keyboardEvent.time.tv_usec);
+            keyboardMsg.event = event;
+            return keyboardMsg;};
+        if ((keyboardEvent.type == EV_KEY) && (keyboardEvent.value != REP_DELAY)) {
+            if (keyboardEvent.code==KEY_UP)
+                return makeKeyboardMsg(KB_EVENT_UP);
+            else if (keyboardEvent.code==KEY_LEFT)
+                return makeKeyboardMsg(KB_EVENT_LEFT);
+            else if (keyboardEvent.code==KEY_RIGHT)
+                return makeKeyboardMsg(KB_EVENT_RIGHT);
+            else if (keyboardEvent.code==KEY_DOWN)
+                return makeKeyboardMsg(KB_EVENT_DOWN);
+            else if (keyboardEvent.code==KEY_SPACE)
+                return makeKeyboardMsg(KB_EVENT_SPACE);
+        }
+        return makeKeyboardMsg(KB_EVENT_NONE);};
+
+    rxros::observable::from_device<input_event>(keyboardDevice)
+        | map(keyboardEvent2KeyboardMsg)
+        | publish_to_topic<teleop_msgs::Keyboard>("/keyboard");
+
+    rxros::logging().info() << "Spinning keyboard_publisher...";
+    rxros::spin();
+}
+
+```
+
+## Example 2: A Velocity Publisher
+
 The following example is a full implementation of a velocity publisher
 that takes input from a keyboard and joystick and publishes Twist messages
 on the /cmd_vel topic:<br>
@@ -480,4 +599,3 @@ int main(int argc, char** argv) {
     rxros::spin();
 }
 ```
-<br>
