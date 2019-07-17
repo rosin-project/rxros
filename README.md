@@ -314,7 +314,7 @@ This section describes how to turn a Yaml configuration file into an observable 
 ROS uses the Yaml format to configure various packages. An example of a Yaml file is given below: 
 It’s a configuration of the sensors and actuators that are used on a BrickPi3 robot. 
 
-```
+```yaml
 brickpi3_robot:
   - type: motor
     name: r_wheel_joint
@@ -341,15 +341,7 @@ an observable data stream with three elements: One element for each device.
 The example below demonstrates how to use the rxros::observable::from_yaml function.
 As soon as we subscribe to the observable it will start to emit events (on_next events)
 in form of configurations for each device. The device can then be used to lookup
-information about its type, name, port and frequency. This is all important information
-that are needed to create an instance of the device and to start monitoring device.
-
-The device is of type DeviceConfig. It is nothing but a support or helper class that
-gives easy access to the values of the device’s elements. The call device.getFrequency()
-is a wrapper for the call ‘(double) value[“frequency”]’ where value is a special data
-structure that represents the Yaml format of a device and ‘(double)’ is a conversion
-operator that turns the looked up frequency into a double. The structure will be described
-in more details in the chapter “RxROS Implementation”.
+information about its type, name, port and frequency.
  
 #### Syntax
 
