@@ -79,7 +79,7 @@ cd ..
 ```
 
 The RxROS language depends on the following software:<br>
-1. Ubuntu Binoic 18.04
+1. Ubuntu Bionic 18.04
 2. ROS Melodic v12
 3. Reactive C++ v2
 
