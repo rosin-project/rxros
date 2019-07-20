@@ -183,7 +183,7 @@ int main(int argc, char** argv) {
 
 Logging is fundamentally a debugging facility that allows the programmer to print out information
 about the robot’s internal state. RxROS provides five logging levels where each level indicates the
-severity of the problem. Each loglevel returns as show a reference to a logging object which actually
+severity of the problem. Each loglevel returns as shown a reference to a logging object which actually
 is an std::ostringstream. This means that the well-known C++ stream insertion operator “<<” can be
 used to compose the logging messages. RxROS logging will be fully backwards compatible with ROS.
 This means that all the functionality provided by the ROS logging framework is also available to RxROS.
