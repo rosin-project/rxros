@@ -74,8 +74,9 @@ Finally, we have come to the RxROS project. To install RxROS do the following:
 ```bash
 git clone https://github.com/rosin-project/rx_ros.git
 cd rx_ros
-sudo install.sh
-cd .. 
+./install.sh
+catkin_make
+cd ..
 ```
 
 The RxROS language depends on the following software:<br>
@@ -340,8 +341,10 @@ an observable data stream with three elements: One element for each device.
 
 The example below demonstrates how to use the rxros::observable::from_yaml function.
 As soon as we subscribe to the observable it will start to emit events (on_next events)
-in form of configurations for each device. The device can then be used to lookup
-information about its type, name, port and frequency.
+in form of configurations of type XmlRpc::XmlRpcValue for each device. The device can
+then be used to lookup information about its type, name, port and frequency. 
+The DeveiceConfig is a simple helper class that will take the configurations and provide
+simple access functions such as device.getType() which is equal to config["Type"].
  
 #### Syntax
 
@@ -352,16 +355,58 @@ auto rxros::observable::from_yaml(const std::string& namespace)
 #### Example
 
 ```cpp
+#include <rxros.h>
 int main(int argc, char** argv) {
     rxros::init(argc, argv, "brickpi3"); // Name of this node.
     //...
     rxros::observable::from_yaml("/brickpi3/brickpi3_robot").subscribe(
-        [=](const auto& device) { // on_next event
+        [=](auto config) { // on_next event
+            DeviceConfig device(config);
             if (device.getType() == "motor") {
                 rxros::logging().debug() << device.getType() << ", " << device.getName() << ", " << device.getPort() << ", " << device.getFrequency();
     //..
     rxros::spin();
 }
+```
+
+```cpp
+#include <ros/ros.h>
+
+// Support class to simplify access to configuration parameters for device
+class DeviceConfig
+{
+private:
+    std::string type;
+    std::string name;
+    std::string frameId;
+    std::string port;
+    double frequency;
+    double minRange;
+    double maxRange;
+    double spreadAngle;
+
+public:
+    explicit DeviceConfig(XmlRpc::XmlRpcValue& value) {
+        type = value.hasMember("type") ? (std::string) value["type"] : std::string("");
+        name = value.hasMember("name") ? (std::string) value["name"] : std::string("");
+        frameId = value.hasMember("frame_id") ? (std::string) value["frame_id"] : std::string("");
+        port = value.hasMember("port") ? (std::string) value["port"] : std::string("");
+        frequency = value.hasMember("frequency") ? (double) value["frequency"] : 0.0;
+        minRange = value.hasMember("min_range") ? (double) value["min_range"] : 0.0;
+        maxRange = value.hasMember("max_range") ? (double) value["max_range"] : 0.0;
+        spreadAngle = value.hasMember("spread_angle") ? (double) value["spread_angle"] : 0.0;
+    }
+    ~DeviceConfig() = default;
+
+    const std::string& getType() const {return type;}
+    const std::string& getName() const {return name;}
+    const std::string& getFrameId() const {return frameId;}
+    const std::string& getPort() const {return port;}
+    double getFrequency() const {return frequency;}
+    double getMinRange() const { return minRange;}
+    double getMaxRange() const { return  maxRange;}
+    double getSpreadAngle() const { return spreadAngle;}
+};
 ```
 
 ## Operators
