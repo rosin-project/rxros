@@ -49,6 +49,7 @@
   <!-- Use doc_depend for packages you need only for building documentation: -->
   <!--   <doc_depend>doxygen</doc_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>rxros</build_depend>
   <build_depend>roscpp</build_depend>
   <build_depend>rospy</build_depend>
   <build_depend>std_msgs</build_depend>
@@ -57,6 +58,7 @@
   <build_depend>nav_msgs</build_depend>
   <build_depend>brickpi3_msgs</build_depend>
   <build_depend>tf</build_depend>
+  <build_export_depend>rxros</build_export_depend>
   <build_export_depend>roscpp</build_export_depend>
   <build_export_depend>rospy</build_export_depend>
   <build_export_depend>std_msgs</build_export_depend>
@@ -65,6 +67,7 @@
   <build_export_depend>geometry_msgs</build_export_depend>
   <build_export_depend>brickpi3_msgs</build_export_depend>
   <build_export_depend>tf</build_export_depend>
+  <exec_depend>rxros</exec_depend>
   <exec_depend>roscpp</exec_depend>
   <exec_depend>rospy</exec_depend>
   <exec_depend>std_msgs</exec_depend>
