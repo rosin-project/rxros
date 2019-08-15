@@ -4,4 +4,4 @@
 - setup-file:
     local-name: /opt/ros/melodic/setup.sh
 - other:
-    local-name: /opt/ros/melidic/share/ros
+    local-name: /opt/ros/melodic/share/ros
