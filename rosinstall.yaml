@@ -1,7 +1,3 @@
 - git:
     uri: https://github.com/rosin-project/rx_ros
     local-name: rx_ros
-- setup-file:
-    local-name: /opt/ros/melodic/setup.sh
-- other:
-    local-name: /opt/ros/melodic/share/ros

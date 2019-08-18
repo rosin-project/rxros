@@ -47,46 +47,37 @@ sudo apt-get install ros-melodic-joy ros-melodic-teleop-twist-keyboard
 sudo apt-get install ros-melodic-navigation
 ```
 
-### Reactive C++
-
-Reactive C++ is also a github project. It can be found at<br>
-https://github.com/ReactiveX/RxCpp<br>
-To install RxCpp execute the following commands:
+### RxROS
+Finally, we have come to the RxROS project.
+To install RxROS do the following:
 
 ```bash
-git clone --recursive  https://github.com/ReactiveX/RxCpp.git 
-cd RxCpp 
-mkdir -p projects/build 
-cd projects/build 
-cmake -G"Unix Makefiles" -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=RelWithDebInfo -B. ../CMake 
-make #optional, will take long time to execute.
-sudo make install 
-cd ..
+mkdir ~/rxros_ws # choose any name for your workspace
+cd ~/rxros_ws
+wstool init src https://raw.githubusercontent.com/rosin-project/rx_ros/master/rosinstall.yaml
+catkin_make
 ```
 
-After the installation has completed you can remove the RxCpp directory.
-The needed C++ header files have been installed in /usr/include/rxcpp.
-
-### RxROS
-
-Finally, we have come to the RxROS project. To install RxROS do the following:
+To start using RxROS you must execute the following commands:
 
 ```bash
-git clone https://github.com/rosin-project/rx_ros.git
-cd rx_ros
-./install.sh
+source ~/rx_ros/devel/setup.bash
+mkdir -p ~/my_ws/src
+cd ~/mt_ws/src
+catkin_create_pkg my_pkg std_msgs roscpp rxros
+# create the files you need in your new package ...
+cd ~/ws
 catkin_make
-cd ..
 ```
 
 The RxROS language depends on the following software:<br>
 1. Ubuntu Bionic 18.04
 2. ROS Melodic v12
 3. Reactive C++ v2
+   
+The included examples depends on the following software:<br>
+1. 
 
-The software must be installed as described above.<br>
-The RxROS itself consist of a singe file named rxros.h.
-The file must be installed in /usr/local/include.<br>
 
 Now, lets look at the language in more details.
 The RxROS provides simple access to ROS via a set of classes.
