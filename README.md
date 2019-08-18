@@ -1,14 +1,14 @@
 # RxROS
 
-## Introduction 
+## Introduction
 
 RxROS is new API for ROS based on the paradigm of reactive programming.
 Reactive programming is an alternative to callback-based programming for implementing
 concurrent message passing systems that emphasizes explicit data flow over control flow.
-It makes the message flow and transformations of messages easy to capture in one place. 
+It makes the message flow and transformations of messages easy to capture in one place.
 It eliminates problems with deadlocks and understanding how callbacks interact.
-It helps you to make your nodes functional, concise, and testable. 
-RxROS aspires to the slogan ‘concurrency made easy’. 
+It helps you to make your nodes functional, concise, and testable.
+RxROS aspires to the slogan ‘concurrency made easy’.
 
 ## Setup and installation
 
@@ -52,7 +52,7 @@ Finally, we have come to the RxROS project.
 To install RxROS do the following:
 
 ```bash
-mkdir ~/rxros_ws # choose any name for your workspace
+mkdir ~/rxros_ws # choose any name you like for your workspace.
 cd ~/rxros_ws
 wstool init src https://raw.githubusercontent.com/rosin-project/rx_ros/master/rosinstall.yaml
 catkin_make
@@ -61,9 +61,9 @@ catkin_make
 To start using RxROS you must execute the following commands:
 
 ```bash
-source ~/rx_ros/devel/setup.bash
+source ~/rxros_ws/devel/setup.bash
 mkdir -p ~/my_ws/src
-cd ~/mt_ws/src
+cd ~/my_ws/src
 catkin_create_pkg my_pkg std_msgs roscpp rxros
 # create the files you need in your new package ...
 cd ~/ws
@@ -71,12 +71,32 @@ catkin_make
 ```
 
 The RxROS language depends on the following software:<br>
-1. Ubuntu Bionic 18.04
-2. ROS Melodic v12
-3. Reactive C++ v2
-   
-The included examples depends on the following software:<br>
-1. 
+1. Ubuntu Bionic 18.04<br>
+2. ROS Melodic v12<br>
+3. Reactive C++ v2<br>
+https://github.com/ReactiveX/RxCpp<br>
+Released under the Microsoft Open Source Code of Conduct.<br>
+The RxCpp library (header files) is included in the RxROS distribution.<br>
+4. roscpp meets c++14 now!! by Takashi Ogura (OTL)<br>
+https://github.com/OTL/roscpp14<br>
+Released under Apache License 2.0<br>
+Ideas from the library has been used in RxROS.
+
+The RxROS examples depends in addition on the following software:<br>
+1. BrickPi3 software from Dexter Industries<br>
+https://github.com/DexterInd/BrickPi3<br>
+Released under the MIT License.<br>
+The BrickPi3.cpp and the BrickPi3.h driver files from the BrickPi3
+release have been included in the RxROS distribution. <br>
+2. Modern C++ Scheduling Library by Bosma<br>
+https://github.com/Bosma/Scheduler<br>
+Released under the MIT License.<br>
+The Bosma Scheduler (header files) and its dependencies
+have been included in the RxROS distribution.<br>
+3. Modern and efficient C++ Thread Pool Library <br>
+https://github.com/vit-vit/CTPL<br>
+Released under Apache License 2.0<br>
+Used by the Bosma Scheduler.
 
 
 Now, lets look at the language in more details.
@@ -86,11 +106,11 @@ gives simple access to ROS.<br>
 
 ## Initial setup
 
-The most fundamental RxROS program is the initialization of a ROS node. 
+The most fundamental RxROS program is the initialization of a ROS node.
 This is done simply by calling the rxros::init function. The rxros::init function takes three arguments:
 The number of command line arguments the node or program was called with (argc), the actual arguments (argv)
 and the name of the node. argc and argv are inherited directly from the main function and all three arguments
-are used to initialize a ROS node. Failure to initialize a node with rxros::init will cause all interaction 
+are used to initialize a ROS node. Failure to initialize a node with rxros::init will cause all interaction
 with ROS to fail.
 
 ### Syntax
@@ -115,7 +135,7 @@ The other fundamental function of RxROS is rxros::spin. The function blocks the 
 This means that the rxros::spin function always should be placed at the very bottom of the main function.
 The other purpose of the rxros::spin function is to dispatch messages from ROS topics to the appropriate RxROS observables.
 Failure to omit the rxros::spin function will cause the program to terminate immediately and observables based on ROS topics
-will not emit any events. 
+will not emit any events.
 
 The Example below shows a minimal RxROS program that creates a ROS node named “my_node”.
 The program will due to rxros:spin() continue to run until it is either shutdown or terminated.
@@ -226,7 +246,7 @@ message types it is not possible to merge them directly. The map operator solves
 teleop_msgs::Joystick and teleop_msgs::Keyboard message into a simple integer that represents the low level event of
 moving the joystick or pressing the keyboard.
 
-The pipe operator “|” is a specialty of RxCpp that is used as a simple mechanism to compose operations on 
+The pipe operator “|” is a specialty of RxCpp that is used as a simple mechanism to compose operations on
 observable message streams. The usual “.” notation could have been used just as vel, but it’s common to use
 the pipe operator “|” in RxCpp.
 
@@ -255,7 +275,7 @@ int main(int argc, char** argv) {
 ### Observable from a transform listener
 
 A transform listener listens as the name indicates to broadcasted transformations, or more specific it listens to
-broadcasted transformations from a specified parent frame id to a specified child frame id. 
+broadcasted transformations from a specified parent frame id to a specified child frame id.
 The rxros::observable::from_transform turns these transformations into an observable message stream of
 type tf::StampedTransform. The rxros::observable::from_transform takes three arguments: the parent frameId and child frameId
 and then an optional frequency. The frequency specifies how often the rxros::observable::from_transform will perform
@@ -273,7 +293,7 @@ The function rxros::observable::from_device will turn a Linux block or character
 observable message stream. rxros::observable::from_device has as such nothing to do with ROS, but it provides an
 interface to low-level data types that are needed in order to create e.g. keyboard and joystick observables.
 The rxros::observable::from_device takes as argument the name of the device and a type of the data that are read
-from the device. 
+from the device.
 
 The example below shows what it takes to turn a stream of low-level joystick events into an observable message stream
 and publish them on a ROS topic. First an observable message stream is created from the device “/dev/input/js0”.
@@ -303,8 +323,8 @@ int main(int argc, char** argv) {
 ### Observable from a Yaml file
 
 This section describes how to turn a Yaml configuration file into an observable message stream.
-ROS uses the Yaml format to configure various packages. An example of a Yaml file is given below: 
-It’s a configuration of the sensors and actuators that are used on a BrickPi3 robot. 
+ROS uses the Yaml format to configure various packages. An example of a Yaml file is given below:
+It’s a configuration of the sensors and actuators that are used on a BrickPi3 robot.
 
 ```yaml
 brickpi3_robot:
@@ -328,15 +348,15 @@ brickpi3_robot:
 
 The Yaml file defines a configuration of the BrickPi3 motor, color and touch sensor.
 The rxros::observable::from_yaml function will turn the Yaml configuration file into
-an observable data stream with three elements: One element for each device. 
+an observable data stream with three elements: One element for each device.
 
 The example below demonstrates how to use the rxros::observable::from_yaml function.
 As soon as we subscribe to the observable it will start to emit events (on_next events)
 in form of configurations of type XmlRpc::XmlRpcValue for each device. The device can
-then be used to lookup information about its type, name, port and frequency. 
+then be used to lookup information about its type, name, port and frequency.
 The DeveiceConfig is a simple helper class that will take the configurations and provide
 simple access functions such as device.getType() which is equal to config["Type"].
- 
+
 #### Syntax
 
 ```cpp
@@ -408,16 +428,16 @@ observable message streams we created in the previous section.
 
 ### Publish to Topic
 
-rxros::operators::publish_to_topic is a rather special operator. It does not modify the message steam - 
+rxros::operators::publish_to_topic is a rather special operator. It does not modify the message steam -
 it is in other words an identity function/operator. It will however take each message from the
 stream and publish it to a specific topic. This means that it is perfectly possible to continue
-modifying the message stream after it has been published to a topic. This will allow us to e.g. 
+modifying the message stream after it has been published to a topic. This will allow us to e.g.
 send transform broadcasts or even publish the messages to other topics.
 
 #### Syntax:
 
 ```cpp
-auto rxros::operators::publish_to_topic<topic_type>(const std::string &topic, const uint32_t queue_size = 10) 
+auto rxros::operators::publish_to_topic<topic_type>(const std::string &topic, const uint32_t queue_size = 10)
 ```
 
 #### Example:
@@ -441,7 +461,7 @@ It does not modify the message steam it is operating on, but it will take each m
 The rxros::operators::send_transform comes in two variants: One that takes no arguments and operates on message streams of
 type tf::StampedTranformation and one that takes the parent frame id and child frame id as argument and operates on message
 streams of type tf::Transform. The later will convert the tf::Transform messages into tf::StampedTranformation messages so
-that both operators broadcast the same message type. 
+that both operators broadcast the same message type.
 
 #### Syntax:
 
@@ -460,7 +480,7 @@ RxROS only provides a means to send a request, i.e. the client side. The server 
 the same way as it is done it ROS. To send a request the  rxros::operators::call_service operator is called. It take
 a service name as argument and service type that specifies the type of the observable message stream the operation
 was applied on. The service type consists of a request and response part. The request part must be filled out prior
-to the service call and the result will be a new observable stream where the response part has been filled out by the 
+to the service call and the result will be a new observable stream where the response part has been filled out by the
 server part.
 
 #### Syntax:
@@ -472,13 +492,13 @@ auto rxros::operators::call_service<service_type>(const std::string& service_nam
 ### Sample with Frequency
 
 The operator rxros::operators::sample_with_frequency will at regular intervals emit the last element or message of the
-observable message stream it was applied on - that is independent of whether it has changed or not. This means that 
+observable message stream it was applied on - that is independent of whether it has changed or not. This means that
 the observable message stream produced by rxros::operators::sample_with_frequency may contain duplicated messages if
 the frequency is too high and it may miss messages in case the frequency is too low. This is the preferred way in ROS
-to publish messages on a topic and therefore a needed operation. 
+to publish messages on a topic and therefore a needed operation.
 
-The operation operator rxros::operators::sample_with_frequency comes in two variants. 
-One that is executing in the current thread and one that is executing in a specified thread also known as a 
+The operation operator rxros::operators::sample_with_frequency comes in two variants.
+One that is executing in the current thread and one that is executing in a specified thread also known as a
 coordination in RxCpp.
 
 #### Syntax:
