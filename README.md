@@ -18,15 +18,6 @@ In order to make use of this software you must install the following software on
 
 You can download an image of the Ubuntu Bionic Linux distribution at<br>
 https://www.ubuntu.com/#download<br>
-You may in addition find the following packages useful.
-
-```bash
-sudo apt-get install git doxygen graphviz-* meld cmake
-sudo apt-get install emacs qtcreator qt5-*
-sudo apt-get install tree gimp
-sudo apt-get install liburdfdom-tools
-sudo apt-get install libcanberra-gtk-module
-```
 
 ### ROS Melodic Morenia
 
