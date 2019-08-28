@@ -1,3 +1,6 @@
 - git:
-    uri: https://github.com/rosin-project/rx_ros
-    local-name: rx_ros
+    uri: https://github.com/rosin-project/rxros.git
+    local-name: rxros
+- git:
+    uri: https://github.com/rosin-project/rxros_examples.git
+    local-name: rxros_examples
