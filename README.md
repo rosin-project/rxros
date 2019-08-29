@@ -14,29 +14,10 @@ RxROS aspires to the slogan ‘concurrency made easy’.
 
 In order to make use of this software you must install the following software on your computer:
 
-### Ubuntu Bionic (18.04)
+ * Ubuntu Bionic (18.04)
+ * ROS Melodic Morenia
 
-You can download an image of the Ubuntu Bionic Linux distribution at<br>
-https://www.ubuntu.com/#download<br>
-
-### ROS Melodic Morenia
-
-Installation instruction of how to install ROS Melodic Morenia can be found at<br>
-http://wiki.ros.org/melodic/Installation/Ubuntu<br>
-or execute the following commands to install ROS Melodic Morenia:
-
-```bash
-sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
-sudo apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
-sudo apt-get update
-sudo apt-get install ros-melodic-desktop-full
-sudo rosdep init
-rosdep update
-echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
-sudo apt-get install python-rosinstall python-rosinstall-generator python-wstool build-essential
-sudo apt-get install ros-melodic-joy ros-melodic-teleop-twist-keyboard
-sudo apt-get install ros-melodic-navigation
-```
+Installation instructions for ROS Melodic on Ubuntu Bionic may be found [here](http://wiki.ros.org/melodic/Installation/Ubuntu).
 
 ### RxROS
 Finally, we have come to the RxROS project.
