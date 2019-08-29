@@ -54,7 +54,10 @@ cd ~/ws
 catkin_make
 ```
 
-The RxROS language depends on the following software:<br>
+### Acknowledgements
+
+The RxROS library depends on and uses the following software:<br>
+
 1. Ubuntu Bionic 18.04<br>
 2. ROS Melodic v12<br>
 3. Reactive C++ v2<br>
