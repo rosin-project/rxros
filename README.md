@@ -24,9 +24,21 @@ Finally, we have come to the RxROS project.
 To install RxROS do the following:
 
 ```bash
-mkdir ~/rxros_ws # choose any name you like for your workspace.
+# make sure we have the base setup file sourced
+source /opt/ros/melodic/setup.bash
+
+# choose any name you like for your workspace.
+mkdir ~/rxros_ws
 cd ~/rxros_ws
+
+# populate the workspace with rxros packages
 wstool init src https://raw.githubusercontent.com/rosin-project/rxros/master/rxros.rosinstall
+
+# install all required dependencies
+rosdep update
+rosdep install --from-paths ~/rxros_ws/src --ignore-src
+
+# build the workspace
 catkin_make
 ```
 
