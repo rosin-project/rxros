@@ -4,3 +4,6 @@
 - git:
     uri: https://github.com/rosin-project/rxros_examples.git
     local-name: rxros_examples
+- git:
+    uri: https://github.com/rosin-project/rxcpp_vendor.git
+    local-name: rxcpp_vendor
