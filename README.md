@@ -55,7 +55,7 @@ To start using RxROS you must execute the following commands:
 source ~/rxros_ws/devel/setup.bash
 mkdir -p ~/my_ws/src
 cd ~/my_ws/src
-catkin_create_pkg my_pkg std_msgs roscpp rxros
+catkin_create_pkg my_pkg std_msgs rxros
 # create the files you need in your new package ...
 cd ~/ws
 catkin_make
