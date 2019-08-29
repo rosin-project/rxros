@@ -3,6 +3,7 @@ project(rxros)
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
+  rxcpp_vendor
   std_msgs
 )
 
@@ -11,6 +12,7 @@ catkin_package(
     include
   CATKIN_DEPENDS
     roscpp
+    rxcpp_vendor
     std_msgs
 )
 
