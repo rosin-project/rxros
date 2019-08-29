@@ -73,21 +73,11 @@ https://github.com/OTL/roscpp14<br>
 Released under Apache License 2.0<br>
 Ideas from the library has been used in RxROS.
 
-The RxROS examples depends in addition on the following software:<br>
-1. BrickPi3 software from Dexter Industries<br>
-https://github.com/DexterInd/BrickPi3<br>
-Released under the MIT License.<br>
-The BrickPi3.cpp and the BrickPi3.h driver files from the BrickPi3
-release have been included in the RxROS distribution. <br>
-2. Modern C++ Scheduling Library by Bosma<br>
-https://github.com/Bosma/Scheduler<br>
-Released under the MIT License.<br>
-The Bosma Scheduler (header files) and its dependencies
-have been included in the RxROS distribution.<br>
-3. Modern and efficient C++ Thread Pool Library <br>
-https://github.com/vit-vit/CTPL<br>
-Released under Apache License 2.0<br>
-Used by the Bosma Scheduler.
+### Example packages
+
+Some example packages showcasing the use of RxROS may be found in the [rxros_examples](https://github.com/rosin-project/rxros_examples) repository.
+
+Refer to the `README` in that repository for additional setup and installation instructions.
 
 
 Now, lets look at the language in more details.
