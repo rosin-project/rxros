@@ -45,7 +45,7 @@ To install RxROS do the following:
 ```bash
 mkdir ~/rxros_ws # choose any name you like for your workspace.
 cd ~/rxros_ws
-wstool init src https://raw.githubusercontent.com/rosin-project/rx_ros/master/rosinstall.yaml
+wstool init src https://raw.githubusercontent.com/rosin-project/rxros/master/rxros.rosinstall
 catkin_make
 ```
 
