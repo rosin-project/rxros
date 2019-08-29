@@ -73,7 +73,8 @@ https://github.com/OTL/roscpp14<br>
 Released under Apache License 2.0<br>
 Ideas from the library has been used in RxROS.
 
-### Example packages
+
+## Example packages
 
 Some example packages showcasing the use of RxROS may be found in the [rxros_examples](https://github.com/rosin-project/rxros_examples) repository.
 
