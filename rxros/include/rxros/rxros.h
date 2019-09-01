@@ -28,8 +28,8 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef RXROS_H
-#define RXROS_H
+#ifndef RXROS_INCLUDE_RXROS_H_
+#define RXROS_INCLUDE_RXROS_H_
 
 #include <fcntl.h>
 #include <unistd.h>
@@ -374,4 +374,4 @@ namespace rxros
 } // end namespace rxros
 
 
-#endif //RXROS_H
+#endif // RXROS_INCLUDE_RXROS_H_

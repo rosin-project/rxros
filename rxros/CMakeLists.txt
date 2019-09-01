@@ -3,7 +3,8 @@ project(rxros)
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
-  std_msgs
+  rxcpp_vendor
+  tf
 )
 
 catkin_package(
@@ -11,7 +12,8 @@ catkin_package(
     include
   CATKIN_DEPENDS
     roscpp
-    std_msgs
+    rxcpp_vendor
+    tf
 )
 
 
@@ -20,6 +22,5 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-install(DIRECTORY include/
-  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-)
+install(DIRECTORY include/${PROJECT_NAME}/
+  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION})
