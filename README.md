@@ -10,6 +10,54 @@ It eliminates problems with deadlocks and understanding how callbacks interact.
 It helps you to make your nodes functional, concise, and testable.
 RxROS aspires to the slogan ‘concurrency made easy’.
 
+
+## Contents
+
+   * [RxROS](#rxros)
+      * [Introduction](#introduction)
+      * [Setup and installation](#setup-and-installation)
+         * [RxROS](#rxros-1)
+         * [Acknowledgements](#acknowledgements)
+      * [Example packages](#example-packages)
+      * [Initial setup](#initial-setup)
+         * [Syntax](#syntax)
+         * [Example](#example)
+      * [Spinning](#spinning)
+         * [Syntax](#syntax-1)
+         * [Example](#example-1)
+      * [Parameters](#parameters)
+         * [Syntax](#syntax-2)
+         * [Example](#example-2)
+      * [Logging](#logging)
+         * [Syntax](#syntax-3)
+         * [Example](#example-3)
+      * [Observables](#observables)
+         * [Observable from a Topic](#observable-from-a-topic)
+            * [Syntax](#syntax-4)
+            * [Example](#example-4)
+         * [Observable from a transform listener](#observable-from-a-transform-listener)
+            * [Syntax](#syntax-5)
+         * [Observable from a Linux device](#observable-from-a-linux-device)
+            * [Syntax](#syntax-6)
+            * [Example](#example-5)
+         * [Observable from a Yaml file](#observable-from-a-yaml-file)
+            * [Syntax](#syntax-7)
+            * [Example](#example-6)
+      * [Operators](#operators)
+         * [Publish to Topic](#publish-to-topic)
+            * [Syntax:](#syntax-8)
+            * [Example:](#example-7)
+         * [Send Transform](#send-transform)
+            * [Syntax:](#syntax-9)
+         * [Call Service](#call-service)
+            * [Syntax:](#syntax-10)
+         * [Sample with Frequency](#sample-with-frequency)
+            * [Syntax:](#syntax-11)
+            * [Example:](#example-8)
+      * [Example 1: A Keyboard Publisher](#example-1-a-keyboard-publisher)
+      * [Example 2: A Velocity Publisher](#example-2-a-velocity-publisher)
+
+
 ## Setup and installation
 
 In order to make use of this software you must install the following software on your computer:
