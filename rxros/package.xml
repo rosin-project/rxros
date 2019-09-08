@@ -4,6 +4,7 @@
   <version>0.1.0</version>
   <description>The RxROS package</description>
 
+  <author>Henrik Larsen</author>
   <maintainer email="wasowski@itu.dk">Andrzej Wasowski</maintainer>
   <maintainer email="g.a.vanderhoorn@tudelft.nl">G.A. vd. Hoorn</maintainer>
   <maintainer email="henrik7264@outlook.com">Henrik Larsen</maintainer>
