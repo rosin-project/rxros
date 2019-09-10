@@ -197,14 +197,8 @@ namespace rxros
     }; // end of class parameter
 
 
-    class observable
+    namespace observable
     {
-    private:
-        observable() = default;
-
-    public:
-        ~observable() = default;
-
         template<class T>
         static auto from_topic(const std::string& topic, const uint32_t queueSize = 10)
         {
@@ -309,7 +303,7 @@ namespace rxros
                     subscriber.on_completed();
                 });
         }
-    }; // end of class observable
+    } // end of namespace observable
 } // end of namespace rxros
 
 
