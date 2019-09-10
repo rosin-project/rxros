@@ -40,8 +40,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <rxcpp/rx.hpp>
 #include <ros/ros.h>
 #include <ros/console.h>
-#include <tf/transform_broadcaster.h>
-#include <tf/transform_listener.h>
 
 
 namespace rxros
@@ -213,33 +211,6 @@ namespace rxros
             return observable.subscribe_on(rxcpp::synchronize_new_thread());
         }
 
-        static auto from_transform(const std::string& parent_frameId, const std::string& child_frameId, const double frequencyInHz = 10.0)
-        {
-            auto observable = rxcpp::observable<>::create<tf::StampedTransform>(
-                [=](rxcpp::subscriber<tf::StampedTransform> subscriber) {
-                    tf::TransformListener transform_listener;
-                    ros::Rate rate(frequencyInHz);
-                    bool errReported = false;
-                    while (rxros::ok()) {
-                        try {
-                            tf::StampedTransform transform;
-                            transform_listener.lookupTransform(parent_frameId, child_frameId, ros::Time(0), transform);
-                            subscriber.on_next(transform);
-                        }
-                        catch (...) {
-                            std::exception_ptr err = std::current_exception();
-                            subscriber.on_error(err);
-                            errReported = true;
-                            break;
-                        }
-                        rate.sleep();
-                    }
-                    if (!errReported) {
-                        subscriber.on_completed();
-                    }});
-            return observable.subscribe_on(rxcpp::synchronize_new_thread());
-        }
-
         template<class T>
         static auto from_device(const std::string& device_name)
         {
@@ -332,22 +303,6 @@ namespace rxros
                 ros::Publisher publisher(rxros::node::get_handle().advertise<T>(topic, queue_size));
                 source.observe_on(rxcpp::synchronize_new_thread()).subscribe(
                     [=](const T& msg) {publisher.publish(msg);});
-                return source;};}
-
-
-        auto send_transform() {
-            return [=](auto&& source) {
-                tf::TransformBroadcaster transformBroadcaster;
-                source.observe_on(rxcpp::synchronize_new_thread()).subscribe(
-                    [&](const tf::StampedTransform& stf) {transformBroadcaster.sendTransform(stf);});
-                return source;};}
-
-
-        auto send_transform(const std::string &parent_frameId, const std::string &child_frameId) {
-            return [=](auto&& source) {
-                tf::TransformBroadcaster transformBroadcaster;
-                source.observe_on(rxcpp::synchronize_new_thread()).subscribe(
-                    [&](const tf::Transform& tf) {transformBroadcaster.sendTransform(tf::StampedTransform(tf, ros::Time::now(), parent_frameId, child_frameId));});
                 return source;};}
 
 
