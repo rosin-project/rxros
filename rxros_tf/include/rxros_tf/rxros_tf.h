@@ -36,7 +36,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <tf/transform_listener.h>
 
 
-namespace rxros_tf
+namespace rxros
 {
     namespace observable
     {
@@ -67,10 +67,10 @@ namespace rxros_tf
             return observable.subscribe_on(rxcpp::synchronize_new_thread());
         }
     } // end of namespace observable
-} // end of namespace rxros_tf
+} // end of namespace rxros
 
 
-namespace rxros_tf
+namespace rxros
 {
     namespace operators
     {
@@ -90,7 +90,7 @@ namespace rxros_tf
                 return source;};}
 
     } // end namespace operators
-} // end namespace rxros_tf
+} // end namespace rxros
 
 
 #endif // RXROS_TF_INCLUDE_RXROS_TF_H_
