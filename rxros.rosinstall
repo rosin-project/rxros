@@ -1,6 +1,3 @@
 - git:
     uri: https://github.com/rosin-project/rxros.git
     local-name: rxros
-- git:
-    uri: https://github.com/rosin-project/rxcpp_vendor.git
-    local-name: rxcpp_vendor

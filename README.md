@@ -80,7 +80,7 @@ mkdir ~/rxros_ws
 cd ~/rxros_ws
 
 # populate the workspace with rxros packages
-wstool init src https://raw.githubusercontent.com/rosin-project/rxros/master/rxros.rosinstall
+git clone https://github.com/rosin-project/rxros.git src/rxros
 
 # install all required dependencies
 rosdep update
