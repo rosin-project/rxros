@@ -69,36 +69,32 @@ Installation instructions for ROS Melodic on Ubuntu Bionic may be found [here](h
 
 ### RxROS
 Finally, we have come to the RxROS project.
-To install RxROS do the following:
+
+RxROS may be installed using the following command (in Ubuntu and Debian, for ROS Melodic and Kinetic):
 
 ```bash
-# make sure we have the base setup file sourced
-source /opt/ros/melodic/setup.bash
-
-# choose any name you like for your workspace.
-mkdir ~/rxros_ws
-cd ~/rxros_ws
-
-# populate the workspace with rxros packages
-git clone https://github.com/rosin-project/rxros.git src/rxros
-
-# install all required dependencies
-rosdep update
-rosdep install --from-paths ~/rxros_ws/src --ignore-src
-
-# build the workspace
-catkin_make
+# for ROS Kinetic replace 'melodic' with 'kinetic'
+sudo apt install ros-melodic-rxros
 ```
 
-To start using RxROS you must execute the following commands:
+To start using RxROS create a package in your Catkin workspace which depends on the `rxros` package:
 
 ```bash
-source ~/rxros_ws/devel/setup.bash
+# make sure to source the correct version of ROS. If your using
+# Kinetic, replace 'melodic' with 'kinetic' in the following command
+source /opt/ros/melodic/setup.bash
+
+# create a workspace (skip if you already have a workspace)
 mkdir -p ~/my_ws/src
 cd ~/my_ws/src
+
+# create your package 'my_pkg' which has 'rxros' as a dependency
 catkin_create_pkg my_pkg std_msgs rxros
+
 # create the files you need in your new package ...
-cd ~/ws
+
+# build your workspace
+cd ~/my_ws
 catkin_make
 ```
 
