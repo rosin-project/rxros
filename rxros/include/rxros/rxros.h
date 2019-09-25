@@ -48,8 +48,8 @@ namespace rxros
         ros::init(argc, argv, name);
     }
 
-    static void spin() {
-        ros::MultiThreadedSpinner spinner(0); // Use a spinner for each available CPU core
+    static void spin(uint32_t thread_count = 1) { // Use per default 1 thread for spinning
+        ros::MultiThreadedSpinner spinner(thread_count);
         spinner.spin();
     }
 

@@ -159,13 +159,18 @@ The other purpose of the rxros::spin function is to dispatch messages from ROS t
 Failure to omit the rxros::spin function will cause the program to terminate immediately and observables based on ROS topics
 will not emit any events.
 
+rxros::spin will per default use one thread for dispatching messages. For most nodes this will be sufficient.
+In special cases where a node uses many topics it may be necessary to use more threads for dispatching messages.
+This can be achieved by specifying the number of threads the rxros::spin function should use.
+A special case is rxros::spin(0) which will allocate a thread for each CPU core.
+ 
 The Example below shows a minimal RxROS program that creates a ROS node named “my_node”.
 The program will due to rxros:spin() continue to run until it is either shutdown or terminated.
 
 ### Syntax
 
 ```cpp
-void rxros::spin();
+void rxros::spin(uint32_t thread_count = 1);
 ```
 
 ### Example
