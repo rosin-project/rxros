@@ -119,7 +119,7 @@ int main(int argc, char** argv) {
 ```
 
 The `rxros` package is constructed in a similar manner to `roscpp` and `tf`:
-tf has a set of additional packages that add functionality specific to a
+`tf` has a set of additional packages that add functionality specific to a
 certain topic or functional context (ie: packages for converting to-and-from
 certain math libraries, working with geometric data (points, poses, etc).
 
