@@ -163,7 +163,7 @@ Refer to the `README` in that repository for additional setup and installation i
 ## RxROS API
 
 Now, lets look at the language in more details.
-The RxROS provides simple access to ROS via a set of functions.
+RxROS provides simple access to ROS via a set of functions.
 The functions provides more precisely an extension to RxCpp that
 gives simple access to ROS.<br>
 
