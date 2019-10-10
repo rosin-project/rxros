@@ -124,7 +124,7 @@ certain topic or functional context (ie: packages for converting to-and-from
 certain math libraries, working with geometric data (points, poses, etc)).
 
 This means that in case you need access to the TF
-functionality of RXROS the <rxros_tf/rxros_tf.h> needs to be included as follows:
+functionality of `rxros` the `rxros_tf/rxros_tf.h` needs to be included as follows:
 
 ```cpp
 #include <rxros_tf/rxros_tf.h>
