@@ -107,7 +107,7 @@ cd ~/my_ws
 catkin_make
 ```
 
-A typical RxROS file should include the <rxros/rxros.h> header file
+A typical RxROS program should include the `rxros/rxros.h` header file
 as shown in the following code:
 
 ```cpp
