@@ -112,7 +112,7 @@ The `rxros` package is constructed in a similar manner to `roscpp` and `tf`:
 certain topic or functional context (i.e.: packages for converting to-and-from
 certain math libraries, working with geometric data (points, poses, etc)).
 
-This means that in case you need access to TF functionality of `rxros` the `rxros_tf/rxros_tf.h` needs to be included as well:
+This means that in case you need access to TF functionality of `rxros` the `rxros_tf/rxros_tf.h` header file needs to be included as follows:
 
 ```cpp
 #include <rxros/rxros.h>
@@ -622,7 +622,7 @@ int main(int argc, char** argv)
 
 The following example is a full implementation of a velocity publisher
 that takes input from a keyboard and joystick and publishes Twist messages
-on the /cmd_vel topic:<br>. For more information see [rxros_examples](https://github.com/rosin-project/rxros_examples).
+on the /cmd_vel topic. For more information see [rxros_examples](https://github.com/rosin-project/rxros_examples).
 
 ```cpp
 #include <rxros/rxros.h>
