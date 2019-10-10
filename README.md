@@ -61,25 +61,14 @@ RxROS aspires to the slogan ‘concurrency made easy’.
 
 ## Setup and installation
 
-In order to make use of this software you must install the following software on your computer:
+In order to make use of this software you must install one of the following ROS distributions on your computer:
 
- * Ubuntu Bionic (18.04)
- * ROS Melodic Morenia
-
-or
-
- * Ubuntu Xenial Xerus (16.04)
+ * ROS Melodic Morenia, or
  * ROS Kinetic Kame
-
-Basic RxROS functionality requires only installation of the ROS "ROS-Base" packages,
-where as full RxROS functionality, which includes transformation (tf) observers
-and operations, requires installation of the ROS "Desktop-Full" packages (Recommended).
-
 
 ### RxROS
 
-RxROS is installed using the following command (in Ubuntu and Debian,
-for ROS Melodic and Kinetic):
+RxROS is installed using the following command (in Ubuntu and Debian, for ROS Melodic and Kinetic):
 
 ```bash
 # for ROS Kinetic replace 'melodic' with 'kinetic'
@@ -120,24 +109,19 @@ int main(int argc, char** argv) {
 
 The `rxros` package is constructed in a similar manner to `roscpp` and `tf`:
 `tf` has a set of additional packages that add functionality specific to a
-certain topic or functional context (ie: packages for converting to-and-from
+certain topic or functional context (i.e.: packages for converting to-and-from
 certain math libraries, working with geometric data (points, poses, etc)).
 
-This means that in case you need access to the TF
-functionality of `rxros` the `rxros_tf/rxros_tf.h` needs to be included as follows:
+This means that in case you need access to TF functionality of `rxros` the `rxros_tf/rxros_tf.h` needs to be included as well:
 
 ```cpp
+#include <rxros/rxros.h>
 #include <rxros_tf/rxros_tf.h>
 // ... add your code here
 int main(int argc, char** argv) {
   // ... add your code here
 }
 ```
-
-Observe that when you import the <rxros_tf/rxros_tf.h> it is necessary to have
-installed the ROS transformation packages. These packages are included as part of a
-"Desktop-Full" ROS installation.
-
 
 ## Acknowledgements
 
@@ -588,7 +572,7 @@ int main(int argc, char** argv) {
 
 The following example is a full implementation of a keyboard publisher
 that takes input from a Linux block device and publishes the low-level
-keyboard events to a ROS topic '/keyboard'. For more information see [rxros_examples](https://github.com/rosin-project/rxros_examples)
+keyboard events to a ROS topic '/keyboard'. For more information see [rxros_examples](https://github.com/rosin-project/rxros_examples).
 
 ```cpp
 #include <rxros/rxros.h>
