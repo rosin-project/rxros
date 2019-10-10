@@ -638,7 +638,7 @@ int main(int argc, char** argv)
 
 The following example is a full implementation of a velocity publisher
 that takes input from a keyboard and joystick and publishes Twist messages
-on the /cmd_vel topic:<br>. For more information see [rxros_examples](https://github.com/rosin-project/rxros_examples)
+on the /cmd_vel topic:<br>. For more information see [rxros_examples](https://github.com/rosin-project/rxros_examples).
 
 ```cpp
 #include <rxros/rxros.h>
