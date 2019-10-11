@@ -428,7 +428,7 @@ int main(int argc, char** argv) {
 ```
 
 ```cpp
-#include <ros/ros.h>
+#include <xmlrpcpp/XmlRpcValue.h>
 
 // Support class to simplify access to configuration parameters for device
 class DeviceConfig
