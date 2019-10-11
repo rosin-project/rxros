@@ -170,7 +170,7 @@ rxros::init(argc, argv, "Name_of_ROS_node");
 
 ```cpp
 #include <rxros/rxros.h>
-int main(int argc, char** argv) {'
+int main(int argc, char** argv) {
     rxros::init(argc, argv, "velocity_publisher"); // Name of this node.
     // ...
 }
