@@ -216,11 +216,11 @@ parameter type will either cause a wrong conversion or the program may simply cr
 #### Syntax
 
 ```cpp
-auto rxros::parameter::get<param_type>(const std::string& name, const param_type& defaultValue)
-auto rxros::parameter::get(const std::string& name, const int defaultValue)
-auto rxros::parameter::get(const std::string& name, const double defaultValue)
-auto rxros::parameter::get(const std::string& name, const char* defaultValue)
-auto rxros::parameter::get(const std::string& name, const std::string& defaultValue)
+auto rxros::parameter::get<param_type>(const std::string& name, const param_type& defaultValue);
+auto rxros::parameter::get(const std::string& name, const int defaultValue);
+auto rxros::parameter::get(const std::string& name, const double defaultValue);
+auto rxros::parameter::get(const std::string& name, const char* defaultValue);
+auto rxros::parameter::get(const std::string& name, const std::string& defaultValue);
 ```
 
 #### Example
@@ -300,7 +300,7 @@ the pipe operator “|” in RxCpp.
 ##### Syntax
 
 ```cpp
-auto rxros::observable::from_topic<topic_type>(const std::string& topic, const uint32_t queue_size = 10)
+auto rxros::observable::from_topic<topic_type>(const std::string& topic, const uint32_t queue_size = 10);
 ```
 
 ##### Example
@@ -331,7 +331,7 @@ a lookup of the broadcasted transformations.
 ##### Syntax
 
 ```cpp
-auto rxros::observable::from_transform(const std::string& parent_frameId, const std::string& child_frameId, const double frequency = 10.0)
+auto rxros::observable::from_transform(const std::string& parent_frameId, const std::string& child_frameId, const double frequency = 10.0);
 ```
 
 #### Observable from a Linux device
@@ -350,7 +350,7 @@ Three simple steps, that’s it! <br>
 ##### Syntax
 
 ```cpp
-auto rxros::observable::from_device<device_type>(const std::string& device_name)
+auto rxros::observable::from_device<device_type>(const std::string& device_name);
 ```
 
 ##### Example
@@ -407,7 +407,7 @@ simple access functions such as device.getType() which is equal to config["Type"
 ##### Syntax
 
 ```cpp
-auto rxros::observable::from_yaml(const std::string& namespace)
+auto rxros::observable::from_yaml(const std::string& namespace);
 ```
 
 ##### Example
@@ -484,7 +484,7 @@ send transform broadcasts or even publish the messages to other topics.
 ##### Syntax:
 
 ```cpp
-auto rxros::operators::publish_to_topic<topic_type>(const std::string &topic, const uint32_t queue_size = 10)
+auto rxros::operators::publish_to_topic<topic_type>(const std::string &topic, const uint32_t queue_size = 10);
 ```
 
 ##### Example:
@@ -533,7 +533,7 @@ server part.
 ##### Syntax:
 
 ```cpp
-auto rxros::operators::call_service<service_type>(const std::string& service_name)
+auto rxros::operators::call_service<service_type>(const std::string& service_name);
 ```
 
 #### Sample with Frequency
@@ -551,8 +551,8 @@ coordination in RxCpp.
 ##### Syntax:
 
 ```cpp
-auto rxros::operators::sample_with_frequency(const double frequency)
-auto rxros::operation::sample_with_frequency(const double frequency, Coordination coordination)
+auto rxros::operators::sample_with_frequency(const double frequency);
+auto rxros::operation::sample_with_frequency(const double frequency, Coordination coordination);
 ```
 
 ##### Example:
