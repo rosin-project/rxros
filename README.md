@@ -17,60 +17,58 @@ RxROS aspires to the slogan ‘concurrency made easy’.
       * [Introduction](#introduction)
       * [Setup and installation](#setup-and-installation)
          * [RxROS](#rxros-1)
-         * [Acknowledgements](#acknowledgements)
+      * [Acknowledgements](#acknowledgements)
       * [Example packages](#example-packages)
-      * [Initial setup](#initial-setup)
-         * [Syntax](#syntax)
-         * [Example](#example)
-      * [Spinning](#spinning)
-         * [Syntax](#syntax-1)
-         * [Example](#example-1)
-      * [Parameters](#parameters)
-         * [Syntax](#syntax-2)
-         * [Example](#example-2)
-      * [Logging](#logging)
-         * [Syntax](#syntax-3)
-         * [Example](#example-3)
-      * [Observables](#observables)
-         * [Observable from a Topic](#observable-from-a-topic)
-            * [Syntax](#syntax-4)
-            * [Example](#example-4)
-         * [Observable from a transform listener](#observable-from-a-transform-listener)
-            * [Syntax](#syntax-5)
-         * [Observable from a Linux device](#observable-from-a-linux-device)
-            * [Syntax](#syntax-6)
-            * [Example](#example-5)
-         * [Observable from a Yaml file](#observable-from-a-yaml-file)
-            * [Syntax](#syntax-7)
-            * [Example](#example-6)
-      * [Operators](#operators)
-         * [Publish to Topic](#publish-to-topic)
-            * [Syntax:](#syntax-8)
-            * [Example:](#example-7)
-         * [Send Transform](#send-transform)
-            * [Syntax:](#syntax-9)
-         * [Call Service](#call-service)
-            * [Syntax:](#syntax-10)
-         * [Sample with Frequency](#sample-with-frequency)
-            * [Syntax:](#syntax-11)
-            * [Example:](#example-8)
+      * [RxROS API](#rxros-api)
+        * [Initial setup](#initial-setup)
+           * [Syntax](#syntax)
+           * [Example](#example)
+        * [Spinning](#spinning)
+           * [Syntax](#syntax-1)
+           * [Example](#example-1)
+        * [Parameters](#parameters)
+           * [Syntax](#syntax-2)
+           * [Example](#example-2)
+        * [Logging](#logging)
+           * [Syntax](#syntax-3)
+           * [Example](#example-3)
+        * [Observables](#observables)
+           * [Observable from a Topic](#observable-from-a-topic)
+              * [Syntax](#syntax-4)
+              * [Example](#example-4)
+           * [Observable from a transform listener](#observable-from-a-transform-listener)
+              * [Syntax](#syntax-5)
+           * [Observable from a Linux device](#observable-from-a-linux-device)
+              * [Syntax](#syntax-6)
+              * [Example](#example-5)
+           * [Observable from a Yaml file](#observable-from-a-yaml-file)
+              * [Syntax](#syntax-7)
+              * [Example](#example-6)
+        * [Operators](#operators)
+           * [Publish to Topic](#publish-to-topic)
+              * [Syntax:](#syntax-8)
+              * [Example:](#example-7)
+           * [Send Transform](#send-transform)
+              * [Syntax:](#syntax-9)
+           * [Call Service](#call-service)
+              * [Syntax:](#syntax-10)
+           * [Sample with Frequency](#sample-with-frequency)
+              * [Syntax:](#syntax-11)
+              * [Example:](#example-8)
       * [Example 1: A Keyboard Publisher](#example-1-a-keyboard-publisher)
       * [Example 2: A Velocity Publisher](#example-2-a-velocity-publisher)
 
 
 ## Setup and installation
 
-In order to make use of this software you must install the following software on your computer:
+In order to make use of this software you must install one of the following ROS distributions on your computer:
 
- * Ubuntu Bionic (18.04)
- * ROS Melodic Morenia
-
-Installation instructions for ROS Melodic on Ubuntu Bionic may be found [here](http://wiki.ros.org/melodic/Installation/Ubuntu).
+ * ROS Melodic Morenia, or
+ * ROS Kinetic Kame
 
 ### RxROS
-Finally, we have come to the RxROS project.
 
-RxROS may be installed using the following command (in Ubuntu and Debian, for ROS Melodic and Kinetic):
+RxROS is installed using the following command (in Ubuntu and Debian, for ROS Melodic and Kinetic):
 
 ```bash
 # for ROS Kinetic replace 'melodic' with 'kinetic'
@@ -98,7 +96,34 @@ cd ~/my_ws
 catkin_make
 ```
 
-### Acknowledgements
+A typical RxROS program should include the `rxros/rxros.h` header file
+as shown in the following code:
+
+```cpp
+#include <rxros/rxros.h>
+// ... add your code here
+int main(int argc, char** argv) {
+  // ... add your code here   
+}
+```
+
+The `rxros` package is constructed in a similar manner to `roscpp` and `tf`:
+`tf` has a set of additional packages that add functionality specific to a
+certain topic or functional context (i.e.: packages for converting to-and-from
+certain math libraries, working with geometric data (points, poses, etc)).
+
+This means that in case you need access to TF functionality of `rxros` the `rxros_tf/rxros_tf.h` header file needs to be included as follows:
+
+```cpp
+#include <rxros/rxros.h>
+#include <rxros_tf/rxros_tf.h>
+// ... add your code here
+int main(int argc, char** argv) {
+  // ... add your code here
+}
+```
+
+## Acknowledgements
 
 The RxROS library depends on and uses the following software:<br>
 
@@ -107,12 +132,11 @@ The RxROS library depends on and uses the following software:<br>
 3. Reactive C++ v2<br>
 https://github.com/ReactiveX/RxCpp<br>
 Released under the Microsoft Open Source Code of Conduct.<br>
-The RxCpp library (header files) is included in the RxROS distribution.<br>
+The RxCpp library (header files) is installed as part of installing RxROS<br>
 4. roscpp meets c++14 now!! by Takashi Ogura (OTL)<br>
 https://github.com/OTL/roscpp14<br>
 Released under Apache License 2.0<br>
 Ideas from the library has been used in RxROS.
-
 
 ## Example packages
 
@@ -120,13 +144,14 @@ Some example packages showcasing the use of RxROS may be found in the [rxros_exa
 
 Refer to the `README` in that repository for additional setup and installation instructions.
 
+## RxROS API
 
 Now, lets look at the language in more details.
-The RxROS provides simple access to ROS via a set of classes.
-The classes provides more precisely an extension to RxCpp that
+RxROS provides simple access to ROS via a set of functions.
+These functions provide more precisely an extension to RxCpp that
 gives simple access to ROS.<br>
 
-## Initial setup
+### Initial setup
 
 The most fundamental RxROS program is the initialization of a ROS node.
 This is done simply by calling the rxros::init function. The rxros::init function takes three arguments:
@@ -135,23 +160,23 @@ and the name of the node. argc and argv are inherited directly from the main fun
 are used to initialize a ROS node. Failure to initialize a node with rxros::init will cause all interaction
 with ROS to fail.
 
-### Syntax
+#### Syntax
 
 ```cpp
 rxros::init(argc, argv, "Name_of_ROS_node");
 ```
 
-### Example
+#### Example
 
 ```cpp
-#include <rxros.h>
-int main(int argc, char** argv) {'
+#include <rxros/rxros.h>
+int main(int argc, char** argv) {
     rxros::init(argc, argv, "velocity_publisher"); // Name of this node.
     // ...
 }
 ```
 
-## Spinning
+### Spinning
 
 The other fundamental function of RxROS is rxros::spin. The function blocks the main thread until it is shutdown or terminated.
 This means that the rxros::spin function always should be placed at the very bottom of the main function.
@@ -167,16 +192,16 @@ A special case is rxros::spin(0) which will allocate a thread for each CPU core.
 The Example below shows a minimal RxROS program that creates a ROS node named “my_node”.
 The program will due to rxros:spin() continue to run until it is either shutdown or terminated.
 
-### Syntax
+#### Syntax
 
 ```cpp
 void rxros::spin(uint32_t thread_count = 1);
 ```
 
-### Example
+#### Example
 
 ```cpp
-#include <rxros.h>
+#include <rxros/rxros.h>
 int main(int argc, char** argv) {
     rxros::init(argc, argv, "my_node"); // Name of this node.
     // ...  
@@ -184,7 +209,7 @@ int main(int argc, char** argv) {
 }
 ```
 
-## Parameters
+### Parameters
 
 ROS provides through the parameters interface a simple way to customize a node without having to recompile
 the source each time there is a change to its configuration. The RxROS parameter interface provides easy
@@ -193,20 +218,20 @@ the name of the parameter to be looked up and a default value that is returned i
 was not found. The returned result is of the same type as the default value. Failure to specify the correct
 parameter type will either cause a wrong conversion or the program may simply crash.
 
-### Syntax
+#### Syntax
 
 ```cpp
-auto rxros::parameter::get<param_type>(const std::string& name, const param_type& defaultValue)
-auto rxros::parameter::get(const std::string& name, const int defaultValue)
-auto rxros::parameter::get(const std::string& name, const double defaultValue)
-auto rxros::parameter::get(const std::string& name, const char* defaultValue)
-auto rxros::parameter::get(const std::string& name, const std::string& defaultValue)
+auto rxros::parameter::get<param_type>(const std::string& name, const param_type& defaultValue);
+auto rxros::parameter::get(const std::string& name, const int defaultValue);
+auto rxros::parameter::get(const std::string& name, const double defaultValue);
+auto rxros::parameter::get(const std::string& name, const char* defaultValue);
+auto rxros::parameter::get(const std::string& name, const std::string& defaultValue);
 ```
 
-### Example
+#### Example
 
 ```cpp
-#include <rxros.h>
+#include <rxros/rxros.h>
 int main(int argc, char** argv) {
     rxros::init(argc, argv, "velocity_publisher"); // Name of this node.
     //...
@@ -218,7 +243,7 @@ int main(int argc, char** argv) {
 }
 ```
 
-## Logging
+### Logging
 
 Logging is fundamentally a debugging facility that allows the programmer to print out information
 about the robot’s internal state. RxROS provides five logging levels where each level indicates the
@@ -227,7 +252,7 @@ is an std::ostringstream. This means that the well-known C++ stream insertion op
 used to compose the logging messages. RxROS logging will be fully backwards compatible with ROS.
 This means that all the functionality provided by the ROS logging framework is also available to RxROS.
 
-### Syntax
+#### Syntax
 
 ```cpp
 rxros::logging& rxros::logging().debug();
@@ -237,10 +262,10 @@ rxros::logging& rxros::logging().error();
 rxros::logging& rxros::logging().fatal();
 ```
 
-### Example
+#### Example
 
 ```cpp
-#include <rxros.h>
+#include <rxros/rxros.h>
 int main(int argc, char** argv) {
     rxros::init(argc, argv, "velocity_publisher"); // Name of this node.
     //...
@@ -254,13 +279,13 @@ int main(int argc, char** argv) {
 }
 ```
 
-## Observables
+### Observables
 
 Observables are asynchronous message streams. They are the fundamental data structure used by RxROS.
 As soon as we have the observables RxCpp will provide us with a number of functions and operators
 to manipulate the streams.
 
-### Observable from a Topic
+#### Observable from a Topic
 
 An observable data stream is created from a topic simply by calling the rxros::observable::from_topic function.
 The function takes two arguments a name of the topic and an optional queue size.
@@ -277,13 +302,13 @@ The pipe operator “|” is a specialty of RxCpp that is used as a simple mecha
 observable message streams. The usual “.” notation could have been used just as vel, but it’s common to use
 the pipe operator “|” in RxCpp.
 
-#### Syntax
+##### Syntax
 
 ```cpp
-auto rxros::observable::from_topic<topic_type>(const std::string& topic, const uint32_t queue_size = 10)
+auto rxros::observable::from_topic<topic_type>(const std::string& topic, const uint32_t queue_size = 10);
 ```
 
-#### Example
+##### Example
 
 ```cpp
 int main(int argc, char** argv) {
@@ -299,7 +324,7 @@ int main(int argc, char** argv) {
 }
 ```
 
-### Observable from a transform listener
+#### Observable from a transform listener
 
 A transform listener listens as the name indicates to broadcasted transformations, or more specific it listens to
 broadcasted transformations from a specified parent frame id to a specified child frame id.
@@ -308,13 +333,13 @@ type tf::StampedTransform. The rxros::observable::from_transform takes three arg
 and then an optional frequency. The frequency specifies how often the rxros::observable::from_transform will perform
 a lookup of the broadcasted transformations.
 
-#### Syntax
+##### Syntax
 
 ```cpp
-auto rxros::observable::from_transform(const std::string& parent_frameId, const std::string& child_frameId, const double frequency = 10.0)
+auto rxros::observable::from_transform(const std::string& parent_frameId, const std::string& child_frameId, const double frequency = 10.0);
 ```
 
-### Observable from a Linux device
+#### Observable from a Linux device
 
 The function rxros::observable::from_device will turn a Linux block or character device like “/dev/input/js0” into an
 observable message stream. rxros::observable::from_device has as such nothing to do with ROS, but it provides an
@@ -327,13 +352,13 @@ and publish them on a ROS topic. First an observable message stream is created f
 Then is is converted it to a stream of ROS messages and finally the messages are published to a ROS topic.
 Three simple steps, that’s it! <br>
 
-#### Syntax
+##### Syntax
 
 ```cpp
-auto rxros::observable::from_device<device_type>(const std::string& device_name)
+auto rxros::observable::from_device<device_type>(const std::string& device_name);
 ```
 
-#### Example
+##### Example
 
 ```cpp
 int main(int argc, char** argv) {
@@ -347,7 +372,7 @@ int main(int argc, char** argv) {
 }
 ```
 
-### Observable from a Yaml file
+#### Observable from a Yaml file
 
 This section describes how to turn a Yaml configuration file into an observable message stream.
 ROS uses the Yaml format to configure various packages. An example of a Yaml file is given below:
@@ -384,16 +409,16 @@ then be used to lookup information about its type, name, port and frequency.
 The DeveiceConfig is a simple helper class that will take the configurations and provide
 simple access functions such as device.getType() which is equal to config["Type"].
 
-#### Syntax
+##### Syntax
 
 ```cpp
-auto rxros::observable::from_yaml(const std::string& namespace)
+auto rxros::observable::from_yaml(const std::string& namespace);
 ```
 
-#### Example
+##### Example
 
 ```cpp
-#include <rxros.h>
+#include <rxros/rxros.h>
 int main(int argc, char** argv) {
     rxros::init(argc, argv, "brickpi3"); // Name of this node.
     //...
@@ -402,13 +427,13 @@ int main(int argc, char** argv) {
             DeviceConfig device(config);
             if (device.getType() == "motor") {
                 rxros::logging().debug() << device.getType() << ", " << device.getName() << ", " << device.getPort() << ", " << device.getFrequency();
-    //..
+    //...
     rxros::spin();
 }
 ```
 
 ```cpp
-#include <ros/ros.h>
+#include <xmlrpcpp/XmlRpcValue.h>
 
 // Support class to simplify access to configuration parameters for device
 class DeviceConfig
@@ -447,13 +472,13 @@ public:
 };
 ```
 
-## Operators
+### Operators
 
 One of the primary advantages of stream oriented processing is the fact that we can apply functional programming
 primitives on them. RxCpp operators are nothing but filters, transformations, aggregations and reductions of the
 observable message streams we created in the previous section.
 
-### Publish to Topic
+#### Publish to Topic
 
 rxros::operators::publish_to_topic is a rather special operator. It does not modify the message steam -
 it is in other words an identity function/operator. It will however take each message from the
@@ -461,13 +486,13 @@ stream and publish it to a specific topic. This means that it is perfectly possi
 modifying the message stream after it has been published to a topic. This will allow us to e.g.
 send transform broadcasts or even publish the messages to other topics.
 
-#### Syntax:
+##### Syntax:
 
 ```cpp
-auto rxros::operators::publish_to_topic<topic_type>(const std::string &topic, const uint32_t queue_size = 10)
+auto rxros::operators::publish_to_topic<topic_type>(const std::string &topic, const uint32_t queue_size = 10);
 ```
 
-#### Example:
+##### Example:
 
 ```cpp
 int main(int argc, char** argv) {
@@ -481,7 +506,7 @@ int main(int argc, char** argv) {
 }
 ```
 
-### Send Transform
+#### Send Transform
 
 The rxros::operators::send_transform operator works exactly the same ways as the rxros::operators::publish_to_topic operator.
 It does not modify the message steam it is operating on, but it will take each message and broadcast it to any listeners.
@@ -490,14 +515,14 @@ type tf::StampedTranformation and one that takes the parent frame id and child f
 streams of type tf::Transform. The later will convert the tf::Transform messages into tf::StampedTranformation messages so
 that both operators broadcast the same message type.
 
-#### Syntax:
+##### Syntax:
 
 ```cpp
 auto rxros::operators::send_transform();
 auto rxros::operators::send_transform(const std::string& parent_frameId, const std::string& child_frameId);
 ```
 
-### Call Service
+#### Call Service
 
 Besides the publish/subscribe model, ROS also provides a request/reply model that allows a remote procedure call (RPC)
 to be send from one node (request) and handled by another node (reply) - it is a typical client-server mechanism that
@@ -510,13 +535,13 @@ was applied on. The service type consists of a request and response part. The re
 to the service call and the result will be a new observable stream where the response part has been filled out by the
 server part.
 
-#### Syntax:
+##### Syntax:
 
 ```cpp
-auto rxros::operators::call_service<service_type>(const std::string& service_name)
+auto rxros::operators::call_service<service_type>(const std::string& service_name);
 ```
 
-### Sample with Frequency
+#### Sample with Frequency
 
 The operator rxros::operators::sample_with_frequency will at regular intervals emit the last element or message of the
 observable message stream it was applied on - that is independent of whether it has changed or not. This means that
@@ -528,14 +553,14 @@ The operation operator rxros::operators::sample_with_frequency comes in two vari
 One that is executing in the current thread and one that is executing in a specified thread also known as a
 coordination in RxCpp.
 
-#### Syntax:
+##### Syntax:
 
 ```cpp
-auto rxros::operators::sample_with_frequency(const double frequency)
-auto rxros::operation::sample_with_frequency(const double frequency, Coordination coordination)
+auto rxros::operators::sample_with_frequency(const double frequency);
+auto rxros::operation::sample_with_frequency(const double frequency, Coordination coordination);
 ```
 
-#### Example:
+##### Example:
 
 ```cpp
 int main(int argc, char** argv) {
@@ -552,11 +577,11 @@ int main(int argc, char** argv) {
 
 The following example is a full implementation of a keyboard publisher
 that takes input from a Linux block device and publishes the low-level
-keyboard events to a ROS topic '/keyboard'
+keyboard events to a ROS topic '/keyboard'. For more information see [rxros_examples](https://github.com/rosin-project/rxros_examples).
 
 ```cpp
-#include <rxros.h>
-#include <teleop_msgs/Keyboard.h>
+#include <rxros/rxros.h>
+#include <rxros_teleop_msgs/Keyboard.h>
 #include "KeyboardPublisher.h"
 using namespace rxcpp::operators;
 using namespace rxros::operators;
@@ -602,12 +627,12 @@ int main(int argc, char** argv)
 
 The following example is a full implementation of a velocity publisher
 that takes input from a keyboard and joystick and publishes Twist messages
-on the /cmd_vel topic:<br>
+on the /cmd_vel topic. For more information see [rxros_examples](https://github.com/rosin-project/rxros_examples).
 
 ```cpp
-#include <rxros.h>
-#include <teleop_msgs/Joystick.h>
-#include <teleop_msgs/Keyboard.h>
+#include <rxros/rxros.h>
+#include <rxros_teleop_msgs/Joystick.h>
+#include <rxros_teleop_msgs/Keyboard.h>
 #include <geometry_msgs/Twist.h>
 #include "JoystickPublisher.h"
 #include "KeyboardPublisher.h"
@@ -652,7 +677,9 @@ int main(int argc, char** argv) {
         else if (event == JS_EVENT_AXIS_LEFT || event == KB_EVENT_LEFT)
             return std::make_tuple(prevVelLinear, adaptVelocity((prevVelAngular + deltaVelAngular), minVelAngular, maxVelAngular, true)); // move left
         else if (event == JS_EVENT_AXIS_RIGHT || event == KB_EVENT_RIGHT)
-            return std::make_tuple(prevVelLinear, adaptVelocity((prevVelAngular - deltaVelAngular), minVelAngular, maxVelAngular, false));}; // move right
+            return std::make_tuple(prevVelLinear, adaptVelocity((prevVelAngular - deltaVelAngular), minVelAngular, maxVelAngular, false)); // move right
+        else
+            return std::make_tuple(prevVelLinear, prevVelAngular));}; // do nothing
 
     auto velTuple2TwistMsg = [](auto velTuple) {
         geometry_msgs::Twist vel;
