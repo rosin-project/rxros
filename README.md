@@ -20,40 +20,36 @@ RxROS aspires to the slogan ‘concurrency made easy’.
       * [Acknowledgements](#acknowledgements)
       * [Example packages](#example-packages)
       * [RxROS API](#rxros-api)
-        * [Initial setup](#initial-setup)
-           * [Syntax](#syntax)
+        * [Creating a RxROS Node](#creating-a-rxros-node)
            * [Example](#example)
-        * [Spinning](#spinning)
-           * [Syntax](#syntax-1)
-           * [Example](#example-1)
         * [Parameters](#parameters)
-           * [Syntax](#syntax-2)
+           * [Syntax](#syntax-1)
            * [Example](#example-2)
         * [Logging](#logging)
-           * [Syntax](#syntax-3)
+           * [Syntax](#syntax-2)
            * [Example](#example-3)
         * [Observables](#observables)
            * [Observable from a Topic](#observable-from-a-topic)
-              * [Syntax](#syntax-4)
+              * [Syntax](#syntax-3)
               * [Example](#example-4)
            * [Observable from a transform listener](#observable-from-a-transform-listener)
-              * [Syntax](#syntax-5)
+              * [Syntax](#syntax-4)
            * [Observable from a Linux device](#observable-from-a-linux-device)
-              * [Syntax](#syntax-6)
+              * [Syntax](#syntax-5)
               * [Example](#example-5)
            * [Observable from a Yaml file](#observable-from-a-yaml-file)
-              * [Syntax](#syntax-7)
+              * [Syntax](#syntax-6)
               * [Example](#example-6)
         * [Operators](#operators)
            * [Publish to Topic](#publish-to-topic)
-              * [Syntax:](#syntax-8)
+              * [Syntax:](#syntax-7)
               * [Example:](#example-7)
            * [Send Transform](#send-transform)
-              * [Syntax:](#syntax-9)
+              * [Syntax:](#syntax-8)
            * [Call Service](#call-service)
-              * [Syntax:](#syntax-10)
+              * [Syntax:](#syntax-9)
            * [Sample with Frequency](#sample-with-frequency)
-              * [Syntax:](#syntax-11)
+              * [Syntax:](#syntax-10)
               * [Example:](#example-8)
       * [Example 1: A Keyboard Publisher](#example-1-a-keyboard-publisher)
       * [Example 2: A Velocity Publisher](#example-2-a-velocity-publisher)
@@ -146,66 +142,25 @@ Refer to the `README` in that repository for additional setup and installation i
 
 ## RxROS API
 
-Now, lets look at the language in more details.
+Now, lets look at the RxROS API in more details.
 RxROS provides simple access to ROS via a set of functions.
-These functions provide more precisely an extension to RxCpp that
-gives simple access to ROS.<br>
+These functions provide more precisely an extension to RxCpp in form of observables and operations that give simple access to ROS.<br>
 
-### Initial setup
+### Creating a RxROS node
 
-The most fundamental RxROS program is the initialization of a ROS node.
-This is done simply by calling the rxros::init function. The rxros::init function takes three arguments:
-The number of command line arguments the node or program was called with (argc), the actual arguments (argv)
-and the name of the node. argc and argv are inherited directly from the main function and all three arguments
-are used to initialize a ROS node. Failure to initialize a node with rxros::init will cause all interaction
-with ROS to fail.
-
-#### Syntax
-
-```cpp
-rxros::init(argc, argv, "Name_of_ROS_node");
-```
+Creating a RxROS node has some commonalities with creating a normal ROS node, as shown in the example below.
+A RxROS node starts by calling `ros::init` to initialize the node and ends with a call to `ros::spin` to block the main thread and listen for topic updates.
+Failure to include theses statements will either cause a RxROS node to exit immediately or behave in a unpredictable manner.
+However, any variant of ros::init and ros::spin may be used to create a RxROS node.
 
 #### Example
 
 ```cpp
 #include <rxros/rxros.h>
 int main(int argc, char** argv) {
-    rxros::init(argc, argv, "velocity_publisher"); // Name of this node.
+    ros::init(argc, argv, "node_name");
     // ...
-}
-```
-
-### Spinning
-
-The other fundamental function of RxROS is rxros::spin. The function blocks the main thread until it is shutdown or terminated.
-This means that the rxros::spin function always should be placed at the very bottom of the main function.
-The other purpose of the rxros::spin function is to dispatch messages from ROS topics to the appropriate RxROS observables.
-Failure to omit the rxros::spin function will cause the program to terminate immediately and observables based on ROS topics
-will not emit any events.
-
-rxros::spin will per default use one thread for dispatching messages. For most nodes this will be sufficient.
-In special cases where a node uses many topics it may be necessary to use more threads for dispatching messages.
-This can be achieved by specifying the number of threads the rxros::spin function should use.
-A special case is rxros::spin(0) which will allocate a thread for each CPU core.
- 
-The Example below shows a minimal RxROS program that creates a ROS node named “my_node”.
-The program will due to rxros:spin() continue to run until it is either shutdown or terminated.
-
-#### Syntax
-
-```cpp
-void rxros::spin(uint32_t thread_count = 1);
-```
-
-#### Example
-
-```cpp
-#include <rxros/rxros.h>
-int main(int argc, char** argv) {
-    rxros::init(argc, argv, "my_node"); // Name of this node.
-    // ...  
-    rxros::spin(); // block the main thread until it is terminated.
+    ros::spin()
 }
 ```
 
@@ -233,13 +188,13 @@ auto rxros::parameter::get(const std::string& name, const std::string& defaultVa
 ```cpp
 #include <rxros/rxros.h>
 int main(int argc, char** argv) {
-    rxros::init(argc, argv, "velocity_publisher"); // Name of this node.
+    ros::init(argc, argv, "velocity_publisher"); // Name of this node.
     //...
     const auto frequency = rxros::parameter::get("/velocity_publisher/frequency", 10.0); // hz
     const auto minVelLinear = rxros::parameter::get("/velocity_publisher/min_vel_linear", 0.04); // m/s
     const auto maxVelLinear = rxros::parameter::get("/velocity_publisher/max_vel_linear", 0.10); // m/s
     //...
-    rxros::spin();
+    ros::spin()();
 }
 ```
 
@@ -267,7 +222,7 @@ rxros::logging& rxros::logging().fatal();
 ```cpp
 #include <rxros/rxros.h>
 int main(int argc, char** argv) {
-    rxros::init(argc, argv, "velocity_publisher"); // Name of this node.
+    ros::init(argc, argv, "velocity_publisher"); // Name of this node.
     //...
     rxros::logging().debug() << "frequency: " << frequency;
     rxros::logging().info() << "min_vel_linear: " << minVelLinear << " m/s";
@@ -275,7 +230,7 @@ int main(int argc, char** argv) {
     rxros::logging().error() << "min_vel_angular: " << minVelAngular << " rad/s";
     rxros::logging().fatal() << "max_vel_angular: " << maxVelAngular << " rad/s";
     //...
-    rxros::spin();
+    ros::spin()();
 }
 ```
 
@@ -312,7 +267,7 @@ auto rxros::observable::from_topic<topic_type>(const std::string& topic, const u
 
 ```cpp
 int main(int argc, char** argv) {
-    rxros::init(argc, argv, "velocity_publisher"); // Name of this node.
+    ros::init(argc, argv, "velocity_publisher"); // Name of this node.
     //...
     auto joy_obsrv = rxros::observable::from_topic<teleop_msgs::Joystick>("/joystick")
         | map([](teleop_msgs::Joystick joy) { return joy.event; });
@@ -320,7 +275,7 @@ int main(int argc, char** argv) {
         | map([](teleop_msgs::Keyboard key) { return key.event; });
     auto teleop_obsrv = joyObsrv.merge(keyObsrv);
     //...
-    rxros::spin();
+    ros::spin()();
 }
 ```
 
@@ -362,13 +317,13 @@ auto rxros::observable::from_device<device_type>(const std::string& device_name)
 
 ```cpp
 int main(int argc, char** argv) {
-    rxros::init(argc, argv, "joystick_publisher"); // Name of this node.
+    ros::init(argc, argv, "joystick_publisher"); // Name of this node.
     //...
     rxros::observable::from_device<joystick_event>("/dev/input/js0")
         | map(joystickEvent2JoystickMsg)
         | publish_to_topic<teleop_msgs::Joystick>("/joystick");
     //...
-    rxros::spin();
+    ros::spin()();
 }
 ```
 
@@ -420,7 +375,7 @@ auto rxros::observable::from_yaml(const std::string& namespace);
 ```cpp
 #include <rxros/rxros.h>
 int main(int argc, char** argv) {
-    rxros::init(argc, argv, "brickpi3"); // Name of this node.
+    ros::init(argc, argv, "brickpi3"); // Name of this node.
     //...
     rxros::observable::from_yaml("/brickpi3/brickpi3_robot").subscribe(
         [=](auto config) { // on_next event
@@ -428,7 +383,7 @@ int main(int argc, char** argv) {
             if (device.getType() == "motor") {
                 rxros::logging().debug() << device.getType() << ", " << device.getName() << ", " << device.getPort() << ", " << device.getFrequency();
     //...
-    rxros::spin();
+    ros::spin()();
 }
 ```
 
@@ -496,13 +451,13 @@ auto rxros::operators::publish_to_topic<topic_type>(const std::string &topic, co
 
 ```cpp
 int main(int argc, char** argv) {
-    rxros::init(argc, argv, "joystick_publisher"); // Name of this node.
+    ros::init(argc, argv, "joystick_publisher"); // Name of this node.
     //...
     rxros::observable::from_device<joystick_event>("/dev/input/js0")
         | map(joystickEvent2JoystickMsg)
         | publish_to_topic<teleop_msgs::Joystick>("/joystick");
     //...
-    rxros::spin();
+    ros::spin()();
 }
 ```
 
@@ -564,12 +519,12 @@ auto rxros::operation::sample_with_frequency(const double frequency, Coordinatio
 
 ```cpp
 int main(int argc, char** argv) {
-    rxros::init(argc, argv, "joystick_publisher"); // Name of this node.
+    ros::init(argc, argv, "joystick_publisher"); // Name of this node.
     //...
     | sample_with_frequency(frequencyInHz)
     | publish_to_topic<geometry_msgs::Twist>("/cmd_vel");
     //...
-    rxros::spin();
+    ros::spin()();
 }
 ```
 
@@ -588,7 +543,7 @@ using namespace rxros::operators;
 
 int main(int argc, char** argv)
 {
-    rxros::init(argc, argv, "keyboard_publisher"); // Name of this Node.
+    ros::init(argc, argv, "keyboard_publisher"); // Name of this Node.
 
     const auto keyboardDevice = rxros::parameter::get("/keyboard_publisher/device", "/dev/input/event1");
     rxros::logging().info() << "Keyboard device: " << keyboardDevice;
@@ -618,7 +573,7 @@ int main(int argc, char** argv)
         | publish_to_topic<teleop_msgs::Keyboard>("/keyboard");
 
     rxros::logging().info() << "Spinning keyboard_publisher...";
-    rxros::spin();
+    ros::spin()();
 }
 
 ```
@@ -639,7 +594,7 @@ on the /cmd_vel topic. For more information see [rxros_examples](https://github.
 
 
 int main(int argc, char** argv) {
-    rxros::init(argc, argv, "velocity_publisher"); // Name of this node.
+    ros::init(argc, argv, "velocity_publisher"); // Name of this node.
 
     const auto frequencyInHz = rxros::Parameter::get("/velocity_publisher/frequency", 10.0); // hz
     const auto minVelLinear = rxros::Parameter::get("/velocity_publisher/min_vel_linear", 0.04); // m/s
@@ -698,6 +653,6 @@ int main(int argc, char** argv) {
         | publish_to_topic<geometry_msgs::Twist>("/cmd_vel"); // publish the Twist messages to the topic "/cmd_vel"
 
     rxros::Logging().info() << "Spinning velocity_publisher ...";
-    rxros::spin();
+    ros::spin()();
 }
 ```
