@@ -77,7 +77,7 @@ namespace rxros
         auto send_transform() {
             return [=](auto&& source) {
                 tf::TransformBroadcaster transformBroadcaster;
-                source.observe_on(rxcpp::synchronize_new_thread()).subscribe(
+                source.subscribe_on(rxcpp::synchronize_new_thread()).subscribe(
                     [&](const tf::StampedTransform& stf) {transformBroadcaster.sendTransform(stf);});
                 return source;};}
 
@@ -85,7 +85,7 @@ namespace rxros
         auto send_transform(const std::string &parent_frameId, const std::string &child_frameId) {
             return [=](auto&& source) {
                 tf::TransformBroadcaster transformBroadcaster;
-                source.observe_on(rxcpp::synchronize_new_thread()).subscribe(
+                source.subscribe_on(rxcpp::synchronize_new_thread()).subscribe(
                     [&](const tf::Transform& tf) {transformBroadcaster.sendTransform(tf::StampedTransform(tf, ros::Time::now(), parent_frameId, child_frameId));});
                 return source;};}
 

@@ -287,7 +287,7 @@ namespace rxros
         auto publish_to_topic(const std::string &topic, const uint32_t queue_size = 10) {
             return [=](auto&& source) {
                 ros::Publisher publisher(rxros::node::get_handle().advertise<T>(topic, queue_size));
-                source.observe_on(rxcpp::synchronize_new_thread()).subscribe(
+                source.subscribe_on(rxcpp::synchronize_new_thread()).subscribe(
                     [=](const T& msg) {publisher.publish(msg);});
                 return source;};}
 
