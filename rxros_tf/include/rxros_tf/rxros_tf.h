@@ -47,7 +47,7 @@ namespace rxros
                     tf::TransformListener transform_listener;
                     ros::Rate rate(frequencyInHz);
                     bool errReported = false;
-                    while (rxros::ok()) {
+                    while (ros::ok()) {
                         try {
                             tf::StampedTransform transform;
                             transform_listener.lookupTransform(parent_frameId, child_frameId, ros::Time(0), transform);

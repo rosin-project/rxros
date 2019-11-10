@@ -44,20 +44,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace rxros
 {
-    static void init(int argc, char** argv, const std::string& name) {
-        ros::init(argc, argv, name);
-    }
-
-    static void spin() {
-        ros::MultiThreadedSpinner spinner(0); // Use a spinner for each available CPU core
-        spinner.spin();
-    }
-
-    static bool ok() {
-        return ros::ok();
-    }
-
-
     class node: public ros::NodeHandle
     {
     private:
@@ -225,7 +211,7 @@ namespace rxros
                         FD_SET(fd, &readfds);
                         T event{};
                         bool errReported = false;
-                        while (rxros::ok()) {
+                        while (ros::ok()) {
                             int rc = select(fd + 1, &readfds, nullptr, nullptr, nullptr);  // wait for input on keyboard device
                             if (rc == -1 && errno == EINTR) { // select was interrupted. This is not an error but we exit the loop
                                 subscriber.on_completed();
